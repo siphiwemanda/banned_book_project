@@ -72,6 +72,14 @@ def create_app(test_config=None):
                 'created': book.title
             })
 
+    @app.route('/Delete/<book_id>', methods=['Delete'])
+    def delete_book(book_id):
+        delete_book = Books.query.filter(Books.id == book_id).first()
+        delete_book.delete()
+        return jsonify({
+            'success': True,
+        })
+
     @app.route('/coolkids')
     def be_cool():
         return "Be cool, man, be coooool! You're almost a FSND grad!"
