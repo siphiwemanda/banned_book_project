@@ -1,7 +1,6 @@
 import os
 from flask import Flask, jsonify, abort, request
 from flask_cors import CORS
-
 from models import setup_db, Books, Countries, Authors
 
 
@@ -25,9 +24,6 @@ def create_app(test_config=None):
         books_dictionary = {}
         for book in books:
             books_dictionary[book.id] = book.title
-
-        ##if len(books_dictionary) == 0:
-        ##  abort(404)
 
         return jsonify({
             'success': True,

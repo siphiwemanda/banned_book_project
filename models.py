@@ -22,31 +22,6 @@ def setup_db(app, database_path=database_path):
 
 
 '''
-Person
-Have title and release year
-'''
-
-
-class Person(db.Model):
-    __tablename__ = 'People'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = Column(String)
-    catchphrase = Column(String)
-    thing = db.column = db.Column(db.String)
-
-    def __init__(self, name, catchphrase=""):
-        self.name = name
-        self.catchphrase = catchphrase
-
-    def format(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'catchphrase': self.catchphrase}
-
-
-'''
 Books Table
 '''
 
@@ -58,7 +33,7 @@ class Books(db.Model):
     title = db.Column(db.String)
     blurb = db.Column(db.String)
     author = db.relationship('Authors', lazy=True)
-    country = db.relationship('Countries', lazy=True)
+    country_id = db.Column(db.Integer, db.ForeignKey('countries.id'))
 
     def __init__(self, title, blurb):
         self.title = title
@@ -93,7 +68,6 @@ class Authors(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     author_name = db.Column(db.String)
     book_id = db.Column(db.Integer, db.ForeignKey('books.id'))
-    countries = db.relationship('Countries', lazy=True)
 
     def __init__(self, author_name):
         self.author_name = author_name
@@ -125,8 +99,7 @@ class Countries(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     country_name = db.Column(db.String)
-    book_id = db.Column(db.Integer, db.ForeignKey('books.id'))
-    author_id = db.Column(db.Integer, db.ForeignKey('authors.id'))
+    book = db.relationship('Books', lazy=True)
 
     def __init__(self, country_name):
         self.country_name = country_name
