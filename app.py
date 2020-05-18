@@ -2,7 +2,7 @@ import os
 from flask import Flask, jsonify, abort
 from flask_cors import CORS
 
-from models import setup_db, Books
+from models import setup_db, Books, Countries, Authors
 
 
 def create_app(test_config=None):
@@ -27,12 +27,35 @@ def create_app(test_config=None):
             books_dictionary[book.id] = book.title
 
         ##if len(books_dictionary) == 0:
-          ##  abort(404)
-        #return books
+        ##  abort(404)
 
         return jsonify({
             'success': True,
             'books': books_dictionary
+        })
+
+    @app.route('/countries')
+    def get_countries():
+        countries = Countries.query.all()
+        countries_dictionary = {}
+        for country in countries:
+            countries_dictionary[country.id] = country.country_name
+
+        return jsonify({
+            'success': True,
+            'country': countries_dictionary
+        })
+
+    @app.route('/authors')
+    def get_authors():
+        authors = Authors.query.all()
+        authors_dictionary = {}
+        for author in authors:
+            authors_dictionary[author.id] = author.author_name
+
+        return jsonify({
+            'success': True,
+            'author': authors_dictionary
         })
 
     @app.route('/coolkids')
