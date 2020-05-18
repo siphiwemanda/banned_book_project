@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify, abort
+from flask import Flask, jsonify, abort, request
 from flask_cors import CORS
 
 from models import setup_db, Books, Countries, Authors
@@ -57,6 +57,24 @@ def create_app(test_config=None):
             'success': True,
             'author': authors_dictionary
         })
+
+    @app.route('/Addbook', methods=['POST'])
+    def create_question():
+        body = request.get_json()
+
+        new_book = body.get('title')
+        new_blurb = body.get('blurb')
+
+        try:
+
+            book = Books(title=new_book, blurb=new_blurb)
+            book.insert()
+        finally:
+
+            return jsonify({
+                'success': True,
+                'created': book.title
+            })
 
     @app.route('/coolkids')
     def be_cool():
