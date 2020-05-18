@@ -1,8 +1,8 @@
 import os
-from flask import Flask
+from flask import Flask, jsonify, abort
 from flask_cors import CORS
 
-from models import setup_db
+from models import setup_db, Books
 
 
 def create_app(test_config=None):
@@ -10,12 +10,30 @@ def create_app(test_config=None):
     setup_db(app)
     CORS(app)
 
+    @app.after_request
+    def after_request(response):
+        response.headers.add('Access-Control-Allow-Headers',
+                             'Content-Type,Authorization,true')
+        response.headers.add('Access-Control-Allow-Methods',
+                             'GET,PUT,POST,DELETE,OPTIONS')
+
+        return response
+
     @app.route('/')
-    def get_greeting():
-        excited = os.environ['EXCITED']
-        greeting = "Hello"
-        if excited == 'true': greeting = greeting + "!!!!!"
-        return greeting
+    def get_books():
+        books = Books.query.all()
+        books_dictionary = {}
+        for book in books:
+            books_dictionary[book.id] = book.title
+
+        if len(books_dictionary) == 0:
+            abort(404)
+        #return books
+
+        return jsonify({
+            'success': True,
+            'books': books_dictionary
+        })
 
     @app.route('/coolkids')
     def be_cool():
