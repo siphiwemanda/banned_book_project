@@ -121,8 +121,3 @@ class Countries(db.Model):
             'country_name': self.country_name}
 
 
-class test123(db.Model):
-    __tablename__ = "test"
-
-    id = db.Column(db.Integer, primary_key=True)
-    country_name = db.Column(db.String)
