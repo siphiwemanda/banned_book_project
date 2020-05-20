@@ -74,7 +74,7 @@ class Authors(db.Model):
     __tablename__ = "authors"
 
     id = db.Column(db.Integer, primary_key=True)
-    author_name = db.Column(db.String)
+    name = db.Column(db.String)
     book = db.relationship('Books', lazy=True)
 
     def __init__(self, author_name):
@@ -101,7 +101,7 @@ class Country(db.Model):
     __tablename__ = "country"
 
     id = db.Column(db.Integer, primary_key=True)
-    country = db.Column(db.String)
+    name = db.Column(db.String)
     banned = db.relationship('Banned', lazy=True)
 
     def __init__(self, country):

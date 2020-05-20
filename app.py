@@ -1,7 +1,7 @@
 import os
 from flask import Flask, jsonify, abort, request, render_template
 from flask_cors import CORS
-from models import setup_db, Books, Authors
+from models import setup_db, Books, Authors, Country
 
 BOOKS_PER_PAGE = 8
 
@@ -42,7 +42,13 @@ def create_app(test_config=None):
     def get_authors():
         authors = Authors.query.all()
 
-        return render_template('pages/authors.html', authors=authors)
+        return render_template('pages/lists.html', data=authors)
+
+    @app.route('/countries')
+    def get_countries():
+        countries = Country.query.all()
+
+        return render_template('pages/lists.html', data=countries)
 
     @app.route('/authors/<int:author_id>')
     def get_individual_authors(author_id):
