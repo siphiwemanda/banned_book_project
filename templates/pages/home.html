@@ -3,7 +3,7 @@
 {% block content %}
 <div class="row">
 	<div class="col-sm-6">
-		<h1> Books 🔥</h1>
+
      <div class="all_books">
 <ul class='list-inline'>
     <li class='book'>
@@ -23,7 +23,7 @@
 </ul>
     <ul class="list-inline">
           {% for book in books %}
-             <li class="writer">{{ book.title}}</li>
+             <li class="book-titles">{{ book.title}}</li>
             {%endfor%}
 
 
