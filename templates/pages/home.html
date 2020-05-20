@@ -7,25 +7,28 @@
      <div class="all_books">
 <ul class='list-inline'>
     <li class='book'>
-        <img src='blue.png' />
+        <img src='/static/images/blue.png' />
     </li>
 
     <li class='book'>
-        <img src='Green.png' />
+        <img src='/static/images/Green.png' />
     </li>
 
     <li class='book'>
-        <img src='pink.png' />
+        <img src='/static/images/pink.png' />
     </li>
     <li class='book'>
-        <img src='yellow.png' />
+        <img src='/static/images/yellow.png' />
     </li>
-
-
-
-
 </ul>
+    <ul class="list-inline">
+          {% for book in books %}
+             <li class="writer">{{ book.title}}</li>
+            {%endfor%}
 
+
+    </ul>
+</div>
 </div>
 </div>
 {% endblock %}

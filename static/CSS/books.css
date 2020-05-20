@@ -16,7 +16,7 @@ body {
     background: #D3D3D3;
 }
 
-ul {
+ul .list-inline {
     display: table-cell;
     vertical-align: middle;
 }
@@ -90,3 +90,12 @@ ul {
     left: -6px;
 }
 
+.writer{
+    font-size: 20px;
+    color: #111111;
+    cursor: pointer;
+    display: block;
+    width: 150px;
+    height: 220px;
+    position: relative;
+}
