@@ -33,6 +33,7 @@ def create_app(test_config=None):
 
     @app.route('/')
     def get_books():
+
         books = Books.query.all()
 
         return render_template('pages/home.html', books=books)
@@ -50,6 +51,13 @@ def create_app(test_config=None):
         books = Books.query.filter_by(author_id=author_id).all()
 
         return render_template('pages/author_profile.html', author_name=author_name, books=books)
+
+    @app.route('/book/<int:book_id>')
+    def get_individual_book(book_id):
+        book = Authors.query.filter_by(id=book_id).first()
+        book = book.id
+
+        return render_template('pages/individual_book.html', book=book)
 
     @app.route('/Addbook', methods=['POST'])
     def create_question():

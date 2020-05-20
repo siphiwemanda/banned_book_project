@@ -5,6 +5,7 @@
 	<div class="col-sm-6">
         <ul class="authors">
             {% for author in authors %}
+                <a href="/authors/{{ author.id }}">
              <li style="display: block" class="writers"> • {{ author.author_name}}</li>
             {%endfor%}
         </ul>
