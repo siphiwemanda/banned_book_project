@@ -34,12 +34,14 @@ class Books(db.Model):
     blurb = db.Column(db.String)
     countries_book_banned = db.Column(db.String)
     author_id = db.Column(db.Integer, db.ForeignKey('authors.id'))
+    bookcover = db.Column(db.String)
 
-    def __init__(self, title, blurb, countries_book_banned , author_id):
+    def __init__(self, title, blurb, countries_book_banned , author_id, bookcover):
         self.title = title
         self.blurb = blurb
         self.author = author_id
         self.country_id = countries_book_banned
+        self.bookcover = bookcover
 
     def insert(self):
         db.session.add(self)
