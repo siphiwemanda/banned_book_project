@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+
+    <title>{% block title %}{% endblock %} - The Banned Book Project</title>
+    {% endblock %}
+</head>
+<body>
+ <link rel="stylesheet" href="/static/CSS/mainlayout.css" />
+ <link rel="stylesheet" href ="/static/CSS/books.css">
+<nav>
+    <ul class="navigation_bar_main">
+        <li><a href="default">Home</a></li>
+        <li><a href="news">Authors</a></li>
+        <li><a href="contact">Countries</a></li>
+        <li style="float: right"><a href="Login">Login</a></li>
+    </ul>
+</nav>
+
+ <div class="search_bar">
+    <div class="search_container">
+        <div class="search_content">
+            <input type="search" placeholder="Search for a book"/><i class="a-icon a-icon-search"></i>
+        </div>
+    </div>
+</div>
+
+<div>
+
+</div>
+    <div id="content">{% block content %}{% endblock %}</div>
+    <div id="footer">
+        {% block footer %}
+
+        {% endblock %}
+    </div>
+</body>
+</html>

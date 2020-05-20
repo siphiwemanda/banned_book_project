@@ -1,0 +1,15 @@
+{% extends 'layouts/main.html' %}
+{% block title %}author{% endblock %}
+{% block content %}
+<div class="row">
+	<div class="col-sm-6">
+		<h1>authors 🔥</h1>
+        <ul id = 'authors'>
+            {% for author in authors %}
+             <li>{{ author.author_name}}</li>
+            {%endfor%}
+        </ul>
+
+</div>
+</div>
+{% endblock %}

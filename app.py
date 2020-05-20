@@ -1,7 +1,20 @@
 import os
-from flask import Flask, jsonify, abort, request
+from flask import Flask, jsonify, abort, request, render_template
 from flask_cors import CORS
-from models import setup_db, Books, Countries, Authors
+from models import setup_db, Books, Authors
+
+BOOKS_PER_PAGE = 8
+
+
+def paginate_books(request, selection):
+    page = request.args.get('page', 1, type=int)
+    start = (page - 1) * BOOKS_PER_PAGE
+    end = start + BOOKS_PER_PAGE
+
+    books = [book.format() for book in selection]
+    current_book = books[start:end]
+
+    return current_book
 
 
 def create_app(test_config=None):
@@ -21,38 +34,22 @@ def create_app(test_config=None):
     @app.route('/')
     def get_books():
         books = Books.query.all()
-        books_dictionary = {}
-        for book in books:
-            books_dictionary[book.id] = book.title
 
-        return jsonify({
-            'success': True,
-            'books': books_dictionary
-        })
-
-    @app.route('/countries')
-    def get_countries():
-        countries = Countries.query.all()
-        countries_dictionary = {}
-        for country in countries:
-            countries_dictionary[country.id] = country.country_name
-
-        return jsonify({
-            'success': True,
-            'country': countries_dictionary
-        })
+        return render_template('pages/home.html', books=books)
 
     @app.route('/authors')
     def get_authors():
         authors = Authors.query.all()
-        authors_dictionary = {}
-        for author in authors:
-            authors_dictionary[author.id] = author.author_name
 
-        return jsonify({
-            'success': True,
-            'author': authors_dictionary
-        })
+        return render_template('pages/authors.html', authors=authors)
+
+    @app.route('/authors/<int:author_id>')
+    def get_individual_authors(author_id):
+        author = Authors.query.filter_by(id=author_id).first()
+        author_name = author.author_name
+        books = Books.query.filter_by(author_id=author_id).all()
+
+        return render_template('pages/author_profile.html', author_name=author_name, books=books)
 
     @app.route('/Addbook', methods=['POST'])
     def create_question():
@@ -71,18 +68,6 @@ def create_app(test_config=None):
                 'success': True,
                 'created': book.title
             })
-
-    @app.route('/Delete/<book_id>', methods=['Delete'])
-    def delete_book(book_id):
-        delete_book = Books.query.filter(Books.id == book_id).first()
-        delete_book.delete()
-        return jsonify({
-            'success': True,
-        })
-
-    @app.route('/coolkids')
-    def be_cool():
-        return "Be cool, man, be coooool! You're almost a FSND grad!"
 
     return app
 

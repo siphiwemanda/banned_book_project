@@ -32,12 +32,14 @@ class Books(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String)
     blurb = db.Column(db.String)
-    author = db.relationship('Authors', lazy=True)
-    country_id = db.Column(db.Integer, db.ForeignKey('countries.id'))
+    countries_book_banned = db.Column(db.String)
+    author_id = db.Column(db.Integer, db.ForeignKey('authors.id'))
 
-    def __init__(self, title, blurb):
+    def __init__(self, title, blurb, countries_book_banned , author_id):
         self.title = title
         self.blurb = blurb
+        self.author = author_id
+        self.country_id = countries_book_banned
 
     def insert(self):
         db.session.add(self)
@@ -54,7 +56,10 @@ class Books(db.Model):
         return {
             'id': self.id,
             'title': self.title,
-            'blurb': self.blurb}
+            'blurb': self.blurb,
+            'author': self.author_id,
+            'countries': self.countries_book_banned
+        }
 
 
 '''
@@ -67,7 +72,7 @@ class Authors(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     author_name = db.Column(db.String)
-    book_id = db.Column(db.Integer, db.ForeignKey('books.id'))
+    book = db.relationship('Books', lazy=True)
 
     def __init__(self, author_name):
         self.author_name = author_name
@@ -87,37 +92,3 @@ class Authors(db.Model):
         return {
             'id': self.id,
             'name': self.author_name}
-
-
-'''
-countries Table
-'''
-
-
-class Countries(db.Model):
-    __tablename__ = "countries"
-
-    id = db.Column(db.Integer, primary_key=True)
-    country_name = db.Column(db.String)
-    book = db.relationship('Books', lazy=True)
-
-    def __init__(self, country_name):
-        self.country_name = country_name
-
-    def insert(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def update(self):
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
-    def format(self):
-        return {
-            'id': self.id,
-            'country_name': self.country_name}
-
-
