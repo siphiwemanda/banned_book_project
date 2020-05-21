@@ -1,0 +1,14 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Author{% endblock %}
+{% block content %}
+<div class="row">
+	<div class="col-sm-6">
+        <ul class="authors">
+            {% for country in countries %}
+                <a href="/countries/{{ country.id }}">
+             <li style="display: block" class="writers"> • {{ country.name}}</li>
+            {%endfor%}
+        </ul>
+</div>
+</div>
+{% endblock %}

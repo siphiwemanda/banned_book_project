@@ -42,26 +42,28 @@ def create_app(test_config=None):
     def get_authors():
         authors = Authors.query.all()
 
-        return render_template('pages/lists.html', data=authors)
+        return render_template('pages/author.html', authors=authors)
 
     @app.route('/countries')
     def get_countries():
         countries = Country.query.all()
 
-        return render_template('pages/lists.html', data=countries)
+        return render_template('pages/countries.html', countries=countries)
 
     @app.route('/authors/<int:author_id>')
     def get_individual_authors(author_id):
         author = Authors.query.filter_by(id=author_id).first()
-        author_name = author.author_name
+        author_name = author.name
         books = Books.query.filter_by(author_id=author_id).all()
 
         return render_template('pages/author_profile.html', author_name=author_name, books=books)
 
     @app.route('/book/<int:book_id>')
     def get_individual_book(book_id):
-        book = Authors.query.filter_by(id=book_id).first()
-        book = book.id
+        book = Books.query.filter_by(id=book_id).first()
+        book = book.title
+        print(book)
+
 
         return render_template('pages/individual_book.html', book=book)
 
@@ -74,7 +76,7 @@ def create_app(test_config=None):
 
         try:
 
-            book = Books(title=new_book, blurb=new_blurb)
+            book = Books(title=new_book, synopsis=new_blurb)
             book.insert()
         finally:
 

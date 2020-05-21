@@ -75,6 +75,8 @@ class Authors(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
+    dob = db.Column(db.Date)
+    about = db.Column(db.String)
     book = db.relationship('Books', lazy=True)
 
     def __init__(self, author_name):
@@ -132,10 +134,12 @@ class Banned(db.Model):
     end_date = db.Column(db.Date)
     book_id = db.Column(db.Integer, db.ForeignKey('books.id'))
     country_id = db.Column(db.Integer, db.ForeignKey('country.id'))
+    reason_given = db.Column(db.String)
 
-    def __init__(self, start_date, end_date):
+    def __init__(self, start_date, end_date, reason_given):
         self.start_date = start_date
         self.end_date = end_date
+        self.reason_given = reason_given
 
     def insert(self):
         db.session.add(self)
@@ -152,5 +156,6 @@ class Banned(db.Model):
         return {
             'id': self.id,
             'start_date': self.start_date,
-            'end_date': self.end_date
+            'end_date': self.end_date,
+            'reason_given': self.reason_given
         }

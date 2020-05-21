@@ -22,7 +22,7 @@
  <div class="search_bar">
     <div class="search_container">
         <div class="search_content">
-            <input type="search" placeholder="Search for a book"/><i class="a-icon a-icon-search"></i>
+            <input type="search" placeholder="Search for a book" onkeypress="return searchFunction(event)"/><i class="a-icon a-icon-search"></i>
         </div>
     </div>
 </div>
@@ -36,5 +36,8 @@
 
         {% endblock %}
     </div>
+
+<script src="{{url_for('static', filename='main.js')}}"></script>
 </body>
+
 </html>

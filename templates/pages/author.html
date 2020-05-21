@@ -4,9 +4,9 @@
 <div class="row">
 	<div class="col-sm-6">
         <ul class="authors">
-            {% for data in data %}
-                <a href="/{{ data }}/{{ data.id }}">
-             <li style="display: block" class="writers"> • {{ data.name}}</li>
+            {% for author in authors %}
+                <a href="/authors/{{ author.id }}">
+             <li style="display: block" class="writers"> • {{ author.name}}</li>
             {%endfor%}
         </ul>
 </div>
