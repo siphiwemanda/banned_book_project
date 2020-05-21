@@ -1,7 +1,7 @@
 import os
 from flask import Flask, jsonify, abort, request, render_template
 from flask_cors import CORS
-from models import setup_db, Books, Authors, Country
+from models import setup_db, Book, Writer, Countries
 
 BOOKS_PER_PAGE = 8
 

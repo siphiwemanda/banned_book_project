@@ -26,14 +26,14 @@ Books Table
 '''
 
 
-class Books(db.Model):
-    __tablename__ = 'books'
+class Book(db.Model):
+    __tablename__ = 'book'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String)
     synopsis = db.Column(db.String)
-    banned = db.relationship('Banned', lazy=True)
-    author_id = db.Column(db.Integer, db.ForeignKey('authors.id'))
+    banned = db.relationship('Banned_book', lazy=True)
+    author_id = db.Column(db.Integer, db.ForeignKey('writer.id'))
     book_cover = db.Column(db.String)
 
     def __init__(self, title, synopsis, countries_book_banned, author_id, book_cover):
@@ -70,14 +70,14 @@ Authors Table
 '''
 
 
-class Authors(db.Model):
-    __tablename__ = "authors"
+class Writer(db.Model):
+    __tablename__ = "writer"
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     dob = db.Column(db.Date)
     about = db.Column(db.String)
-    book = db.relationship('Books', lazy=True)
+    book = db.relationship('Book', lazy=True)
 
     def __init__(self, author_name):
         self.author_name = author_name
@@ -99,12 +99,12 @@ class Authors(db.Model):
             'name': self.author_name}
 
 
-class Country(db.Model):
-    __tablename__ = "country"
+class Countries(db.Model):
+    __tablename__ = "countries"
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
-    banned = db.relationship('Banned', lazy=True)
+    banned = db.relationship('Banned_book', lazy=True)
 
     def __init__(self, country):
         self.country = country
@@ -126,14 +126,14 @@ class Country(db.Model):
             'country': self.country}
 
 
-class Banned(db.Model):
-    __tablename__ = "banned_details"
+class Banned_book(db.Model):
+    __tablename__ = "banned_book"
 
     id = db.Column(db.Integer, primary_key=True)
     start_date = db.Column(db.Date)
     end_date = db.Column(db.Date)
-    book_id = db.Column(db.Integer, db.ForeignKey('books.id'))
-    country_id = db.Column(db.Integer, db.ForeignKey('country.id'))
+    book_id = db.Column(db.Integer, db.ForeignKey('book.id'))
+    country_id = db.Column(db.Integer, db.ForeignKey('countries.id'))
     reason_given = db.Column(db.String)
 
     def __init__(self, start_date, end_date, reason_given):
