@@ -160,10 +160,3 @@ class Banned_book(db.Model):
             'reason_given': self.reason_given
         }
 
-
-class blah(db.Model):
-    __tablename__ = "blah"
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    banned = db.relationship('Banned', lazy=True)

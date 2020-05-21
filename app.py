@@ -34,36 +34,36 @@ def create_app(test_config=None):
     @app.route('/')
     def get_books():
 
+        books = Book.query.all()
 
+        # for book in books:
 
-        #for book in books:
+        return render_template('pages/home.html', books=books)
 
-
-        return 'hello'
 
     @app.route('/authors')
     def get_authors():
-        authors = Authors.query.all()
+        authors = Writer.query.all()
 
         return render_template('pages/author.html', authors=authors)
 
     @app.route('/countries')
     def get_countries():
-        countries = Country.query.all()
+        countries = Countries.query.all()
 
         return render_template('pages/countries.html', countries=countries)
 
     @app.route('/authors/<int:author_id>')
     def get_individual_authors(author_id):
-        author = Authors.query.filter_by(id=author_id).first()
+        author = Writer.query.filter_by(id=author_id).first()
         author_name = author.name
-        books = Books.query.filter_by(author_id=author_id).all()
+        books = Book.query.filter_by(author_id=author_id).all()
 
         return render_template('pages/author_profile.html', author_name=author_name, books=books)
 
     @app.route('/book/<int:book_id>')
     def get_individual_book(book_id):
-        book = Books.query.filter_by(id=book_id).first()
+        book = Book.query.filter_by(id=book_id).first()
         book = book.title
         print(book)
 
@@ -73,7 +73,7 @@ def create_app(test_config=None):
     def delete_book(book_id):
         try:
             print('TRYING')
-            delete_book = Books.query.filter(Books.id == book_id).one_or_none()
+            delete_book = Book.query.filter(Book.id == book_id).one_or_none()
 
             if delete_book is None:
                 print('IS NONE')
@@ -97,7 +97,7 @@ def create_app(test_config=None):
         new_blurb = body.get('blurb')
         try:
 
-            book = Books(title=new_book, synopsis=new_blurb)
+            book = Book(title=new_book, synopsis=new_blurb)
             book.insert()
         finally:
 
