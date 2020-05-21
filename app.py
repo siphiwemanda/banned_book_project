@@ -36,6 +36,10 @@ def create_app(test_config=None):
 
         books = Books.query.all()
 
+
+        #for book in books:
+
+
         return render_template('pages/home.html', books=books)
 
     @app.route('/authors')
@@ -64,8 +68,27 @@ def create_app(test_config=None):
         book = book.title
         print(book)
 
-
         return render_template('pages/individual_book.html', book=book)
+
+    @app.route('/book/delete/<int:book_id>', methods=['DELETE'])
+    def delete_book(book_id):
+        try:
+            print('TRYING')
+            delete_book = Books.query.filter(Books.id == book_id).one_or_none()
+
+            if delete_book is None:
+                print('IS NONE')
+                abort(404)
+            print(delete_book.id)
+            delete_book.delete()
+
+            return jsonify({
+                'success': True,
+                'deleted': delete_book.id,
+            })
+        except:
+            print(422)
+            abort(422)
 
     @app.route('/Addbook', methods=['POST'])
     def create_question():
@@ -73,7 +96,6 @@ def create_app(test_config=None):
 
         new_book = body.get('title')
         new_blurb = body.get('blurb')
-
         try:
 
             book = Books(title=new_book, synopsis=new_blurb)
@@ -84,6 +106,39 @@ def create_app(test_config=None):
                 'success': True,
                 'created': book.title
             })
+
+    @app.errorhandler(404)
+    def not_found(error):
+        return jsonify({
+            "success": False,
+            "error": 404,
+            "message": "resource not found"
+
+        }), 404
+
+    @app.errorhandler(422)
+    def unprocessable(error):
+        return jsonify({
+            "success": False,
+            "error": 422,
+            "message": "unprocessable"
+        }), 422
+
+    @app.errorhandler(400)
+    def bad_request(error):
+        return jsonify({
+            "success": False,
+            "error": 400,
+            "message": "bad request"
+        }), 400
+
+    @app.errorhandler(405)
+    def method_not_allowed(error):
+        return jsonify({
+            "success": False,
+            "error": 405,
+            "message": "Method not allowed"
+        }), 405
 
     return app
 

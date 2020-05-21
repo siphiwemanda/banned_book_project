@@ -22,10 +22,12 @@
     </li>
 </ul>
     <ul class="list-inline">
-          {% for book in books %}
-
+     {% for book in books %}
+        {% if books|length <=4 %}
              <li class="book-titles">{{ book.title}}</li>
-            {%endfor%}
+         {% endif %}
+     {%endfor%}
+
 
 
     </ul>
