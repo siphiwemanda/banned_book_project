@@ -18,7 +18,7 @@ def setup_db(app, database_path=database_path):
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
-    db.create_all()
+    # db.create_all()
 
 
 '''
@@ -159,3 +159,11 @@ class Banned(db.Model):
             'end_date': self.end_date,
             'reason_given': self.reason_given
         }
+
+
+class blah(db.Model):
+    __tablename__ = "blah"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    banned = db.relationship('Banned', lazy=True)
