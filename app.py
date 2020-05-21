@@ -34,13 +34,12 @@ def create_app(test_config=None):
     @app.route('/')
     def get_books():
 
-        books = Books.query.all()
 
 
         #for book in books:
 
 
-        return render_template('pages/home.html', books=books)
+        return 'hello'
 
     @app.route('/authors')
     def get_authors():
