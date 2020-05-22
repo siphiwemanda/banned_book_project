@@ -8,6 +8,7 @@
  <link rel="stylesheet" href="/static/CSS/mainlayout.css" />
  <link rel="stylesheet" href ="/static/CSS/books.css">
  <link rel="stylesheet" href ="/static/CSS/authors.css">
+
 </head>
 <body>
 <nav>
@@ -16,15 +17,18 @@
         <li><a href="/authors">Authors</a></li>
         <li><a href="/countries">Countries</a></li>
          <li style="float: right"><a href="/">Login</a></li>
-         <li style="float: right"><a href="/">Delete</a></li>
-        <li style="float: right"><div class="dropdown">
-             <button class="dropbtn">Edit</button>
-            <div class="dropdown-content">
-                <a href="#">Link 1</a>
-                <a href="#">Link 2</a>
-                <a href="#">Link 3</a>
-  </div>
-</div></li>
+         <!-- <li style="float: right"><a href="/">isHomePageDelete</a></li> -->
+        {% if isHomePage %}
+        <li style="float: right"><a href="#ex1" rel="modal:open">Delete</a></li>
+        <div id="ex1" class="modal">
+                {% for book in books %}
+                 <li style="display: block"><h3>{{ book.title}}</h3></li><button class="delete-button" data-id ="{{ book.id }}">Delete</button>
+                {%endfor%}
+                <br>
+                 <a href="#" rel="modal:close"></a>
+        </div>
+        {% endif %}
+        <li style="float: right"><a href="/">Edit</a></li>
 
 
     </ul>
@@ -49,6 +53,12 @@
     </div>
 
 <script src="{{url_for('static', filename='main.js')}}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+
+<!-- jQuery Modal -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+
 </body>
 
 </html>

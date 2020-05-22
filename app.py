@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify, abort, request, render_template
+from flask import Flask, jsonify, abort, request, render_template, redirect
 from flask_cors import CORS
 from models import setup_db, Book, Writer, Countries
 
@@ -38,8 +38,7 @@ def create_app(test_config=None):
 
         # for book in books:
 
-        return render_template('pages/home.html', books=books)
-
+        return render_template('pages/home.html', books=books, isHomePage=True)
 
     @app.route('/authors')
     def get_authors():
