@@ -25,21 +25,30 @@ const form = document.getElementById('form')
 const Name = document.getElementById('Name')
 const DOB = document.getElementById('DOB')
 const About = document.getElementById('About')
+const book_form = document.getElementById('book-form')
+const book_name = document.getElementById('book-Name')
+const book_synopsis = document.getElementById('book-synopsis')
+const book_cover = document.getElementById('book-cover')
 
-form.addEventListener('submit', (e) =>{
-    e.preventDefault();
+
+function edit_writer() {
     console.log('clicked')
-    checkInputs();
-    console.log('checked')
+
     sendPatch()
     console.log('patch')
 
-})
+}
+
+function bookchecked() {
+
+    console.log('clicked')
+    AddBook()
+
+}
 
 function checkInputs() {
     const NameValue = Name.value
     const DOBValue = DOB.value
-    const AboutValue = About.value
 
     if (NameValue === ''){
         //show error class
@@ -55,6 +64,14 @@ function checkInputs() {
     }else {
         //susses class
         setsuccess(DOB)
+    }
+
+      if (book_name === ''){
+        //show error class
+        setError(book_name, 'DOB can not be blank')
+    }else {
+        //susses class
+        setsuccess(book_name)
     }
 }
 
@@ -73,12 +90,52 @@ function setsuccess(input) {
 
 function sendPatch() {
     let data = {
-        "Name" : Name,
-        "DOB": DOB,
-        "About": About
+        "name" : Name.value,
+        "dob": DOB.value,
+        "about": About.value
+}
+    console.log(data)
+    const buttonID = document.getElementById('submit-author')
+    const WriterID = buttonID.getAttribute('data-id')
+    console.log(WriterID)
+    fetch( '/authors/edit/submit/' + WriterID, {
+        "method": `PATCH`,
+        headers: {
+            'content-type' : 'application/json'
+        },
+        body: JSON.stringify(data)
+    }).then((response) =>{
+        return response.json();
+    }).then((myJson) =>{
+        if(myJson['success'] === true){
+            window.location.href ='/'
+        }
+    });
 }
 
-console.log(data)
+function AddBook() {
+    let data = {
+        "title": book_name.value,
+        "synopsis":book_synopsis.value,
+        "link" :  book_cover.value
+    }
+    console.log(data)
+    fetch('/addbook/submit',{
+        "method": `POST`,
+            headers: {
+             'content-type' : 'application/json'
+        },
+         body: JSON.stringify(data)
+    }).then((response) =>{
+        return response.json();
+    }).then((myJson) =>{
+        if(myJson['success'] === true){
+            window.location.href ='/'
+        }
+    })
+
+
+
 }
 
 

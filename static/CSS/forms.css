@@ -91,3 +91,77 @@
 }
 
 
+
+.book-form{
+    padding: 30px 40px;
+}
+
+.book-form-control{
+    margin-bottom: 10px;
+    padding-bottom: 20px;
+    position: relative;
+}
+
+.book-form-control label{
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+.book-form-control input{
+    border: 2px solid #f0f0f0;
+    border-radius: 4px;
+    display: block;
+    font-family: inherit;
+    font-size: 14px;
+    width: 100%;
+    padding: 10px;
+}
+.book-form-control.success input{
+    border-color: #2ecc71;
+}
+.book-form-control.error input{
+    border-color: #e74c3c;
+}
+
+
+
+.book-form-control i {
+    position: absolute;
+    top: 40px;
+    right: 10px;
+    visibility: hidden;
+}
+
+.book-form-control.success i .fa-check-circle{
+    color: #2ecc71;
+    visibility: visible;
+}
+
+.book-form-control.error i .fa-exclamation-circle{
+    color: #e74c3c;
+    visibility: visible;
+}
+
+.book-form-control small {
+    visibility: hidden;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+.book-form-control.error small{
+    visibility: visible;
+    color: #e74c3c;
+}
+
+.book-form button{
+    background-color: #2ecc71;
+    border: 2px solid #E8EFF0;
+    color: #ffffff;
+    display: block;
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 4px;
+}
+

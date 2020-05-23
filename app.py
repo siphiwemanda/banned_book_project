@@ -27,7 +27,7 @@ def create_app(test_config=None):
         response.headers.add('Access-Control-Allow-Headers',
                              'Content-Type,Authorization,true')
         response.headers.add('Access-Control-Allow-Methods',
-                             'GET,PUT,POST,DELETE,OPTIONS')
+                             'GET,PUT,POST,DELETE,PATCH,OPTIONS')
 
         return response
 
@@ -88,15 +88,23 @@ def create_app(test_config=None):
             print(422)
             abort(422)
 
-    @app.route('/Addbook', methods=['POST'])
-    def create_question():
-        body = request.get_json()
+    @app.route('/addbook')
+    def add_book_():
 
+        return render_template('forms/add_book.html')
+
+    @app.route('/addbook/submit', methods=['POST'])
+    def add_book_submit():
+        body = request.get_json()
         new_book = body.get('title')
-        new_blurb = body.get('blurb')
+        print(new_book)
+        new_synopsis = body.get('synopsis')
+        print(new_synopsis)
+        new_book_cover = body.get('book_cover')
+        print(new_book_cover)
         try:
 
-            book = Book(title=new_book, synopsis=new_blurb)
+            book = Book(title=new_book, synopsis=new_synopsis, book_cover=new_book_cover)
             book.insert()
         finally:
 
@@ -107,8 +115,37 @@ def create_app(test_config=None):
 
     @app.route('/authors/edit/<int:writer_id>')
     def edit_writer(writer_id):
+        authors = Writer.query.all()
+        author = Writer.query.filter_by(id=writer_id).first()
 
-        return render_template('forms/edit_authors.html')
+        return render_template('forms/edit_authors.html', author=author)
+
+    @app.route('/authors/edit/submit/<int:writer_id>', methods=['PATCH'])
+    def submit_writer_edit(writer_id):
+        update = Writer.query.filter_by(id=writer_id).first()
+        print(update.name, update.about, update.dob)
+        body = request.get_json()
+        print(body)
+
+        if body.get('name'):
+            update.name = body.get('name')
+            print(update.name)
+        if body.get('dob'):
+            update.dob = body.get('dob')
+            print(update.dob)
+        if body.get('about'):
+            update.about = body.get('about')
+            print(update.about)
+
+        try:
+            update.insert()
+        except:
+            print('patch aborted')
+            abort(422)
+        return ({
+            "success": True,
+            "Author": update.name
+        })
 
     @app.errorhandler(404)
     def not_found(error):

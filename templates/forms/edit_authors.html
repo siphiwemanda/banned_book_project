@@ -3,19 +3,21 @@
 {% block content %}
 <div class="form_container">
 <div class="form_header">
-    <h2>Edit Writer Details</h2>
+    <h2>Edit Writer Details: <br>
+        <i>{{ author.name }}</i>
+    </h2>
 </div>
 <form class="form" id="form">
     <div class="form-control">
         <label>Name</label>
-        <input type="text" placeholder="text" id="Name">
+        <input type="text" placeholder="Update authors name" id="Name">
         <i class="fas fa-check-circle"></i>
         <i class="fas fa-exclamation"></i>
         <small>Error Message</small>
     </div>
       <div class="form-control">
         <label>DOB</label>
-        <input type="text" placeholder="text" id="DOB">
+        <input type="date" placeholder="update date of birth" id="DOB">
         <i class="fas fa-check-circle"></i>
         <i class="fas fa-exclamation-circle"></i>
         <small>Error Message</small>
@@ -27,7 +29,7 @@
         <i class="fas fa-exclamation"></i>
         <small>Error Message</small>
     </div>
-    <button>SUBMIT</button>
+    <button id="submit-author" data-id ="{{ author.id }}" onclick=edit_writer() >SUBMIT</button>
 </form>
 </div>
 {% endblock %}

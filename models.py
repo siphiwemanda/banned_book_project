@@ -36,11 +36,9 @@ class Book(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey('writer.id'))
     book_cover = db.Column(db.String)
 
-    def __init__(self, title, synopsis, countries_book_banned, author_id, book_cover):
+    def __init__(self, title, synopsis, book_cover):
         self.title = title
         self.synopsis = synopsis
-        self.author = author_id
-        self.country_id = countries_book_banned
         self.book_cover = book_cover
 
     def insert(self):
@@ -59,8 +57,6 @@ class Book(db.Model):
             'id': self.id,
             'title': self.title,
             'synopsis': self.synopsis,
-            'author': self.author_id,
-            'countries': self.countries_book_banned,
             'book_cover': self.book_cover
         }
 
@@ -79,8 +75,10 @@ class Writer(db.Model):
     about = db.Column(db.String)
     book = db.relationship('Book', lazy=True)
 
-    def __init__(self, author_name):
-        self.author_name = author_name
+    def __init__(self, name, dob, about):
+        self.name = name
+        self.dob = dob
+        self.about = about
 
     def insert(self):
         db.session.add(self)
@@ -96,7 +94,10 @@ class Writer(db.Model):
     def format(self):
         return {
             'id': self.id,
-            'name': self.author_name}
+            'name': self.author_name,
+            'dob': self.dob,
+            'about': self.about
+        }
 
 
 class Countries(db.Model):
@@ -106,8 +107,8 @@ class Countries(db.Model):
     name = db.Column(db.String)
     banned = db.relationship('Banned_book', lazy=True)
 
-    def __init__(self, country):
-        self.country = country
+    def __init__(self, name):
+        self.name = name
 
     def insert(self):
         db.session.add(self)
@@ -123,7 +124,7 @@ class Countries(db.Model):
     def format(self):
         return {
             'id': self.id,
-            'country': self.country}
+            'country': self.name}
 
 
 class Banned_book(db.Model):
@@ -159,4 +160,3 @@ class Banned_book(db.Model):
             'end_date': self.end_date,
             'reason_given': self.reason_given
         }
-
