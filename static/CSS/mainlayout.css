@@ -1,4 +1,9 @@
-
+.body{
+    align-items: center;
+    display: flex;
+    min-height: 100vh;
+    justify-content: center;
+}
 .navigation_bar_main{
     list-style-type: none;
     margin: 0;
@@ -78,3 +83,4 @@ li a:hover {
   margin: 4px 2px;
   cursor: pointer;
 }
+

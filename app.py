@@ -105,6 +105,11 @@ def create_app(test_config=None):
                 'created': book.title
             })
 
+    @app.route('/authors/edit/<int:writer_id>')
+    def edit_writer(writer_id):
+
+        return render_template('forms/edit_authors.html')
+
     @app.errorhandler(404)
     def not_found(error):
         return jsonify({

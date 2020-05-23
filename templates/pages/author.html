@@ -6,7 +6,7 @@
         <ul class="authors">
             {% for author in authors %}
                 <a href="/authors/{{ author.id }}">
-             <li style="display: block" class="writers"> • {{ author.name}}</li>
+                <li style="display: block" class="writers"> • {{ author.name}} | <button >Edit</button></li>
             {%endfor%}
         </ul>
 </div>
