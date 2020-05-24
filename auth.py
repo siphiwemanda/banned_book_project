@@ -41,9 +41,8 @@ def get_token_auth_header():
             'code': 'invalid_claims',
             'description': 'incorrect authorisations header.'
         }, 401)
-
+    print(header_parts[1])
     return header_parts[1]
-    # raise Exception('Not Implemented')
 
 
 def check_permissions(permission, payload):
