@@ -1,7 +1,7 @@
 import os
 from flask import Flask, jsonify, abort, request, render_template, redirect, session
 from flask_cors import CORS
-from models import setup_db, Book, Writer, Countries
+from models import setup_db, Book, Writer, Countries, db
 import os.path
 from auth import requires_auth
 
@@ -50,11 +50,11 @@ def create_app(test_config=None):
     def get_books():
 
         books = Book.query.all()
-        #query = session.get(Book, Writer).join(Book).join(Writer)
-
+        #query = db.session.query(Writer, Book).outerjoin(Writer, Book.id == Writer.book).all()
         # for book in books:
+        AUTH0_AUTHORIZE_URL = create_auth0()
 
-        return render_template('pages/home.html', books=books, isHomePage=True)
+        return render_template('pages/home.html', books=books, isHomePage=True,AUTH0_AUTHORIZE_URL=AUTH0_AUTHORIZE_URL )
 
     @app.route('/authors')
     def get_authors():
@@ -163,11 +163,6 @@ def create_app(test_config=None):
             "success": True,
             "Author": update.name
         })
-
-    @app.route('/login')
-    def login():
-        AUTH0_AUTHORIZE_URL = create_auth0()
-        return render_template('pages/login.html', AUTH0_AUTHORIZE_URL=AUTH0_AUTHORIZE_URL)
 
     @app.errorhandler(404)
     def not_found(error):

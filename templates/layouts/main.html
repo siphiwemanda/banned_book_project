@@ -17,9 +17,8 @@
         <li><a href="/">Home</a></li>
         <li><a href="/authors">Authors</a></li>
         <li><a href="/countries">Countries</a></li>
-         <li style="float: right"><a href="/login">Login</a></li>
-         <!-- <li style="float: right"><a href="/">isHomePageDelete</a></li> -->
-        {% if isHomePage %}
+    {% if isHomePage %}
+         <li style="float: right"><a href="{{ AUTH0_AUTHORIZE_URL }}">Login</a></li>
         <li style="float: right"><a href="#ex1" rel="modal:open">Delete</a></li>
         <div id="ex1" class="modal">
                 {% for book in books %}
@@ -28,8 +27,8 @@
                 <br>
                  <a href="#" rel="modal:close"></a>
         </div>
-        {% endif %}
       <li style="float: right"><a href="/addbook">AddBook</a></li>
+    {% endif %}
     </ul>
 </nav>
 <div  id="content">
