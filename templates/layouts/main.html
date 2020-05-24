@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     {% block head %}
-
     <title>{% block title %}{% endblock %} The Banned Book Project</title>
     {% endblock %}
  <link rel="stylesheet" href="/static/CSS/mainlayout.css" />
@@ -18,7 +17,7 @@
         <li><a href="/">Home</a></li>
         <li><a href="/authors">Authors</a></li>
         <li><a href="/countries">Countries</a></li>
-         <li style="float: right"><a href="/">Login</a></li>
+         <li style="float: right"><a href="/login">Login</a></li>
          <!-- <li style="float: right"><a href="/">isHomePageDelete</a></li> -->
         {% if isHomePage %}
         <li style="float: right"><a href="#ex1" rel="modal:open">Delete</a></li>
@@ -30,25 +29,18 @@
                  <a href="#" rel="modal:close"></a>
         </div>
         {% endif %}
-
       <li style="float: right"><a href="/addbook">AddBook</a></li>
     </ul>
 </nav>
-
- <div class="search_bar">
-    <div class="search_container">
-        <div class="search_content">
-            <input type="search" placeholder="Search for a book" onkeypress="return searchFunction(event)"/><i class="a-icon a-icon-search"></i>
-        </div>
-    </div>
+<div  id="content">
+    {% block content %}
+    {% endblock %}
 </div>
-
-    <div  id="content">{% block content %}{% endblock %}</div>
-    <div id="footer">
+<div id="footer">
         {% block footer %}
 
         {% endblock %}
-    </div>
+</div>
 
 <script src="{{url_for('static', filename='main.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>

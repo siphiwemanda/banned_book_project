@@ -1,37 +1,17 @@
 {% extends 'layouts/main.html' %}
 {% block title %}Books{% endblock %}
 {% block content %}
-<div class="row">
-	<div class="col-sm-6">
 
-     <div class="all_books">
-<ul class='list-inline'>
-    <li class='book'>
-        <img src='/static/images/blue.png'  alt="book cover place holder"/>
-    </li>
-
-    <li class='book'>
-        <img src='/static/images/Green.png'  alt="book cover place holder"/>
-    </li>
-
-    <li class='book'>
-        <img src='/static/images/pink.png'  alt="book cover place holder"/>
-    </li>
-    <li class='book'>
-        <img src='/static/images/yellow.png'  alt="book cover place holder"/>
-    </li>
-</ul>
-    <ul class="list-inline">
-     {% for book in books %}
-        {% if books|length <=4 %}
-             <li class="book-titles">{{ book.title}}</li>
-         {% endif %}
+<div class="main-content">
+   {% for book in books %}
+        <div class="card">
+            <h3>{{ book.title }}</h3>
+            <div class="line"></div>
+            <p></p>
+        </div>
      {%endfor%}
 
+</div>
 
 
-    </ul>
-</div>
-</div>
-</div>
 {% endblock %}

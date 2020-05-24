@@ -1,9 +1,24 @@
 import os
-from flask import Flask, jsonify, abort, request, render_template, redirect
+from flask import Flask, jsonify, abort, request, render_template, redirect, session
 from flask_cors import CORS
 from models import setup_db, Book, Writer, Countries
+import os.path
+from auth import requires_auth
+
 
 BOOKS_PER_PAGE = 8
+
+database_path = os.environ['DATABASE_URL']
+Domain = os.environ['Domain']
+Audience = os.environ['audience']
+Client_id = os.environ['client_id']
+returning = os.environ['redirect']
+
+
+def create_auth0():
+    AUTH0_AUTHORIZE_URL = 'https://' + Domain + '/authorize?audience=' + Audience + '&response_type=token&client_id=' + Client_id + '&redirect_uri=' + returning
+    print(AUTH0_AUTHORIZE_URL)
+    return AUTH0_AUTHORIZE_URL
 
 
 def paginate_books(request, selection):
@@ -35,6 +50,7 @@ def create_app(test_config=None):
     def get_books():
 
         books = Book.query.all()
+        #query = session.get(Book, Writer).join(Book).join(Writer)
 
         # for book in books:
 
@@ -69,6 +85,7 @@ def create_app(test_config=None):
         return render_template('pages/individual_book.html', book=book)
 
     @app.route('/book/delete/<int:book_id>', methods=['DELETE'])
+  #  @requires_auth('del:book')
     def delete_book(book_id):
         try:
             print('TRYING')
@@ -146,6 +163,11 @@ def create_app(test_config=None):
             "success": True,
             "Author": update.name
         })
+
+    @app.route('/login')
+    def login():
+        AUTH0_AUTHORIZE_URL = create_auth0()
+        return render_template('pages/login.html', AUTH0_AUTHORIZE_URL=AUTH0_AUTHORIZE_URL)
 
     @app.errorhandler(404)
     def not_found(error):

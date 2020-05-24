@@ -1,101 +1,66 @@
-.book, .book img, .book::after,
-.book::before {
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
+/* =====================================
+   Grid & Flexbox Layout
+======================================== */
+
+.main-content {
+    width: 95%;
+    max-width: 1000px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-gap: 20px;
 }
 
-body,
-html {
+.card {
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* =====================================
+   Page Styles
+======================================== */
+
+
+.main-content {
+    margin: 2em auto;
+}
+.card {
+    position:relative;
+    padding: 2em 1em;
+    border: 1px solid #e1e1e1;
+    border-radius: 0.25em;
+    background: #638EF4;
+    z-index:1;
+}
+.card h3 {
+    color: #fff;
+    margin: 0.35em 0 0;
+    line-height: 2rem;
+    font-weight:500;
+}
+.line {
+    background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/449443/line.png);
+    background-size: 20%;
+    height:20px;
+    background-repeat: no-repeat;
+    background-position: left 0;
+}
+/* =====================================
+   Animation
+======================================== */
+.card::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    display: table;
-    text-align: center;
-}
-
-body {
-    background: #D3D3D3;
-}
-
-ul .list-inline {
-    display: table-cell;
-    vertical-align: middle;
-}
-.all_books{
-    display: inline-block ;
-}
-.list-inline {
-    padding-left: 0;
-    list-style: none;
-}
-.list-inline > li {
-    display: inline-block;
-    margin-left: 2em;
-}
-.list-inline > li:first-child {
-    margin-left: 0;
-}
-
-.book {
-    cursor: pointer;
-    display: block;
-    width: 150px;
-    height: 220px;
-    position: relative;
-    background: white;
-    z-index: 1;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1), 0 9px 20px 0 rgba(0, 0, 0, 0.25);
-    overflow: hidden;
-    -webkit-transition: box-shadow 0.3s linear;
-    transition: box-shadow 0.3s linear;
-}
-
-.book img {
-    width: inherit;
-    height: inherit;
-    -webkit-transform-origin: 0 50%;
-    transform-origin: 0 50%;
-    -webkit-transform: rotateY(0);
-    transform: rotateY(0);
-    -webkit-transition: all 0.45s ease;
-    transition: all 0.45s ease;
-}
-
-.book:hover {
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.25), 0 9px 20px 0 rgba(0, 0, 0, 0.45);
-}
-.book:hover img {
-    -webkit-transform: rotateY(-25deg);
-    transform: rotateY(-25deg);
-    box-shadow: 1px 1px 5px 5px rgba(0, 0, 0, 0.2);
-}
-
-.book::after,
-.book::before {
-    content: "";
-    display: block;
-    width: inherit;
-    height: inherit;
-    position: absolute;
+    transform: scaleY(0);
+    transform-origin: top center;
+    background: #f18776;
     z-index: -1;
-    top: 0;
-    background: white;
-    border: 1px solid #d9d9d9;
+    transition: transform 0.3s;
 }
-
-.book::before {
-    left: -3px;
-}
-
-.book::after {
-    left: -6px;
-}
-
-.book-titles{
-    font-size: 20px;
-    color: #111111;
-    cursor: pointer;
-    display: block;
-    width: 150px;
-    height: 220px;
-    position: relative;
+.card:hover::after {
+    transform: scaleY(1);
 }
