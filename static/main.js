@@ -127,9 +127,3 @@ function AddBook() {
         }
     })
 }
-
-function storeJwt() {
-    let jwt = window.location.href
-    console.log(jwt)
-
-}
