@@ -1,18 +1,19 @@
 {% extends 'layouts/main.html' %}
 {% block title %}author{% endblock %}
 {% block content %}
-<div class="row">
-	<div class="col-sm-6">
-		<h1>{{ author_name }} 🔥</h1>
-        <ul id = 'authors'>
+<div style="display: flex">
+    <div class="profile-page">
+        <i style="size:20px " class="fas fa-portrait"></i>
+        <h1>{{ author_name }}</h1>
+    </div>
+    <div class="book-list-profile-page">
+            <ul id = 'authors'>
             {% for book in books %}
-             <li>{{ book.title}}</li>
+             <li style="padding: 20px"><strong>{{ book.title}} </strong>| {{ book.synopsis }}</li>
             {%endfor%}
-
-        </ul>
-
-
-
+             </ul>
+    </div>
 </div>
-</div>
+
+
 {% endblock %}

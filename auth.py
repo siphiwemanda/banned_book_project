@@ -1,18 +1,13 @@
 import json
-from flask import request, _request_ctx_stack, abort
+from flask import request, _request_ctx_stack, abort, session, redirect
 from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
+import constants
 
 AUTH0_DOMAIN = 'banned-book-project.eu.auth0.com'
 ALGORITHMS = ['RS256']
 API_AUDIENCE = 'logins'
-
-## AuthError Exception
-'''
-AuthError Exception
-A standardized way to communicate auth failure modes
-'''
 
 
 class AuthError(Exception):
@@ -59,21 +54,6 @@ def check_permissions(permission, payload):
         }, 401)
 
     return True
-
-
-'''
-@TODO implement verify_decode_jwt(token) method
-    @INPUTS
-        token: a json web token (string)
-
-    it should be an Auth0 token with key id (kid)
-    it should verify the token using Auth0 /.well-known/jwks.json
-    it should decode the payload from the token
-    it should validate the claims
-    return the decoded payload
-
-    !!NOTE urlopen has a common certificate error described here: https://stackoverflow.com/questions/50236117/scraping-ssl-certificate-verify-failed-error-for-http-en-wikipedia-org
-'''
 
 
 def verify_decode_jwt(token):
@@ -130,11 +110,29 @@ def verify_decode_jwt(token):
     }, 400)
 
 
+def user_in_session(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if 'profile' not in session:
+            # Redirect to Login page here
+            # TODO add a login page
+            return redirect('/')
+        return f(*args, **kwargs)
+
+    return decorated
+
+
 def requires_auth(permission=''):
     def requires_auth_decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            token = get_token_auth_header()
+
+            if constants.JWT in session:
+                print('in seesion')
+                token = session[constants.JWT]
+            else:
+                token = get_token_auth_header()
+
             payload = verify_decode_jwt(token)
             check_permissions(permission, payload)
             return f(payload, *args, **kwargs)

@@ -1,9 +1,14 @@
 import os
-from flask import Flask, jsonify, abort, request, render_template, redirect, session
+
+from flask import Flask, jsonify, abort, request, render_template, redirect, session, json, url_for
 from flask_cors import CORS
+
+import constants
 from models import setup_db, Book, Writer, Countries, db
 import os.path
-from auth import requires_auth, AuthError
+from auth import requires_auth, AuthError, user_in_session
+from authlib.integrations.flask_client import OAuth
+from six.moves.urllib.parse import urlencode
 
 BOOKS_PER_PAGE = 8
 
@@ -12,11 +17,12 @@ Domain = os.environ['Domain']
 Audience = os.environ['audience']
 Client_id = os.environ['client_id']
 returning = os.environ['redirect']
+client_secret = os.environ['client_secret']
 
 
 def create_auth0():
     AUTH0_AUTHORIZE_URL = 'https://' + Domain + '/authorize?audience=' + Audience + '&response_type=token&client_id=' + Client_id + '&redirect_uri=' + returning
-    print(AUTH0_AUTHORIZE_URL)
+    # print(AUTH0_AUTHORIZE_URL)
     return AUTH0_AUTHORIZE_URL
 
 
@@ -34,7 +40,21 @@ def paginate_books(request, selection):
 def create_app(test_config=None):
     app = Flask(__name__)
     setup_db(app)
+    app.secret_key = "NOTAVERYSECURESECRETEKEY"
     CORS(app)
+    oauth = OAuth(app)
+
+    auth0 = oauth.register(
+        'auth0',
+        client_id=Client_id,
+        client_secret='sE68IHYTIREpD06JB7BcTE0JY5_kUs9dV3x_7XRruYg6tuohwm8QVAjtSXM3Khv7',
+        api_base_url='https://banned-book-project.eu.auth0.com',
+        access_token_url='https://banned-book-project.eu.auth0.com/oauth/token',
+        authorize_url='https://banned-book-project.eu.auth0.com/authorize',
+        client_kwargs={
+            'scope': 'openid profile email',
+        },
+    )
 
     @app.after_request
     def after_request(response):
@@ -44,6 +64,47 @@ def create_app(test_config=None):
                              'GET,PUT,POST,DELETE,PATCH,OPTIONS')
 
         return response
+
+    @app.route('/callback')
+    def callback_handling():
+        # Handles response from token endpoint
+        token = auth0.authorize_access_token()
+        print(token)
+        resp = auth0.get('userinfo')
+        userinfo = resp.json()
+
+        # Store the user information in flask session.
+        session['jwt_payload'] = userinfo
+        print(userinfo)
+        session[constants.JWT] = token['access_token']
+        session[constants.JWT_PAYLOAD] = userinfo
+        session['profile'] = {
+            'user_id': userinfo['sub'],
+            'name': userinfo['name'],
+            'picture': userinfo['picture']
+        }
+        return redirect('/dashboard')
+
+    @app.route('/login')
+    def login():
+        return auth0.authorize_redirect(redirect_uri='http://127.0.0.1:5000/callback')
+
+    @app.route('/dashboard')
+    @user_in_session
+    def dashboard():
+        return render_template('pages/dashboard.html', userinfo=session['profile'],
+                               userinfo_pretty=json.dumps(session['jwt_payload'], indent=4))
+
+    @app.route('/logout')
+    def logout():
+        # Clear session stored data
+        session.clear()
+        # Redirect user to logout endpoint
+        #params = {'returnTo': url_for('home', _external=True), 'client_id': Client_id}
+        print('logged out')
+        return redirect(auth0.api_base_url + '/v2/logout?' #+ #urlencode(params)
+               #
+                        )
 
     @app.route('/')
     def get_books():
@@ -84,7 +145,8 @@ def create_app(test_config=None):
         return render_template('pages/individual_book.html', book=book)
 
     @app.route('/book/delete/<int:book_id>', methods=['DELETE'])
-    @requires_auth('del:book')
+    @user_in_session
+    #@requires_auth('del:book')
     def delete_book(*args, **kwargs):
         id = kwargs['book_id']
         try:
@@ -111,7 +173,8 @@ def create_app(test_config=None):
         return render_template('forms/add_book.html')
 
     @app.route('/addbook/submit', methods=['POST'])
-    @requires_auth('post:book')
+    @user_in_session
+    #@requires_auth('post:book')
     def add_book_submit(*args, **kwargs):
         body = request.get_json()
         new_book = body.get('title')
@@ -139,7 +202,8 @@ def create_app(test_config=None):
         return render_template('forms/edit_authors.html', author=author)
 
     @app.route('/authors/edit/submit/<int:writer_id>', methods=['PATCH'])
-    @requires_auth('patch:editauthor')
+    @user_in_session
+    #@requires_auth('patch:editauthor')
     def submit_writer_edit(*args, **kwargs):
         writer_id = kwargs['writer_id']
         update = Writer.query.filter_by(id=writer_id).first()
