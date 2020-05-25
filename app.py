@@ -47,7 +47,7 @@ def create_app(test_config=None):
     auth0 = oauth.register(
         'auth0',
         client_id=Client_id,
-        client_secret='sE68IHYTIREpD06JB7BcTE0JY5_kUs9dV3x_7XRruYg6tuohwm8QVAjtSXM3Khv7',
+        client_secret=client_secret,
         api_base_url='https://banned-book-project.eu.auth0.com',
         access_token_url='https://banned-book-project.eu.auth0.com/oauth/token',
         authorize_url='https://banned-book-project.eu.auth0.com/authorize',
