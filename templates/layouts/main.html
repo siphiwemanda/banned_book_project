@@ -18,7 +18,7 @@
         <li><a href="/authors">Authors</a></li>
         <li><a href="/countries">Countries</a></li>
         {% if isHomePage %}
-            <li style="float: right"><a href="{{ AUTH0_AUTHORIZE_URL }}">Login</a></li>
+            <li style="float: right"><a href="{{ AUTH0_AUTHORIZE_URL }}" onclick=storeJwt()>Login</a></li>
             <li style="float: right"><a href="#ex1" rel="modal:open">Delete</a></li>
             <div id="ex1" class="modal">
                 {% for book in books %}
@@ -38,7 +38,6 @@
 </div>
 <div id="footer">
     {% block footer %}
-
     {% endblock %}
 </div>
 

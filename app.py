@@ -4,6 +4,9 @@ from flask_cors import CORS
 from models import setup_db, Book, Writer, Countries, db
 import os.path
 from auth import requires_auth, AuthError
+from flask import url_for
+from authlib.integrations.flask_client import OAuth
+from six.moves.urllib.parse import urlencode
 
 BOOKS_PER_PAGE = 8
 
@@ -16,7 +19,7 @@ returning = os.environ['redirect']
 
 def create_auth0():
     AUTH0_AUTHORIZE_URL = 'https://' + Domain + '/authorize?audience=' + Audience + '&response_type=token&client_id=' + Client_id + '&redirect_uri=' + returning
-    print(AUTH0_AUTHORIZE_URL)
+    # print(AUTH0_AUTHORIZE_URL)
     return AUTH0_AUTHORIZE_URL
 
 
@@ -35,6 +38,19 @@ def create_app(test_config=None):
     app = Flask(__name__)
     setup_db(app)
     CORS(app)
+    oauth = OAuth(app)
+
+    auth0 = oauth.register(
+        'auth0',
+        client_id='nnjGWA0Hjqopk5wfAZO9P1dduaOTDQTu',
+        client_secret='YOUR_CLIENT_SECRET',
+        api_base_url='https://banned-book-project.eu.auth0.com',
+        access_token_url='https://banned-book-project.eu.auth0.com/oauth/token',
+        authorize_url='https://banned-book-project.eu.auth0.com/authorize',
+        client_kwargs={
+            'scope': 'openid profile email',
+        },
+    )
 
     @app.after_request
     def after_request(response):
@@ -44,6 +60,22 @@ def create_app(test_config=None):
                              'GET,PUT,POST,DELETE,PATCH,OPTIONS')
 
         return response
+
+    @app.route('/callback')
+    def callback_handling():
+        # Handles response from token endpoint
+        auth0.authorize_access_token()
+        resp = auth0.get('userinfo')
+        userinfo = resp.json()
+
+        # Store the user information in flask session.
+        session['jwt_payload'] = userinfo
+        session['profile'] = {
+            'user_id': userinfo['sub'],
+            'name': userinfo['name'],
+            'picture': userinfo['picture']
+        }
+        return redirect('/dashboard')
 
     @app.route('/')
     def get_books():
