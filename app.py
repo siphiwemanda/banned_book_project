@@ -87,7 +87,7 @@ def create_app(test_config=None):
 
     @app.route('/login')
     def login():
-        return auth0.authorize_redirect(redirect_uri='http://127.0.0.1:5000/callback')
+        return auth0.authorize_redirect(redirect_uri=returning)
 
     @app.route('/dashboard')
     @user_in_session
