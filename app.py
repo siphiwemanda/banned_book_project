@@ -1,60 +1,27 @@
 import os
-
-from flask import Flask, jsonify, abort, request, render_template, redirect, session, json, url_for
+from flask import Flask, jsonify, abort, request, render_template, redirect, session
 from flask_cors import CORS
-
-import constants
 from models import setup_db, Book, Writer, Countries, db
 import os.path
-from auth import requires_auth, AuthError, user_in_session
-from authlib.integrations.flask_client import OAuth
-from six.moves.urllib.parse import urlencode
-
-BOOKS_PER_PAGE = 8
+from auth import requires_auth, AuthError
 
 database_path = os.environ['DATABASE_URL']
 Domain = os.environ['Domain']
 Audience = os.environ['audience']
 Client_id = os.environ['client_id']
 returning = os.environ['redirect']
-client_secret = os.environ['client_secret']
 
 
 def create_auth0():
     AUTH0_AUTHORIZE_URL = 'https://' + Domain + '/authorize?audience=' + Audience + '&response_type=token&client_id=' + Client_id + '&redirect_uri=' + returning
-    # print(AUTH0_AUTHORIZE_URL)
+    print(AUTH0_AUTHORIZE_URL)
     return AUTH0_AUTHORIZE_URL
-
-
-def paginate_books(request, selection):
-    page = request.args.get('page', 1, type=int)
-    start = (page - 1) * BOOKS_PER_PAGE
-    end = start + BOOKS_PER_PAGE
-
-    books = [book.format() for book in selection]
-    current_book = books[start:end]
-
-    return current_book
 
 
 def create_app(test_config=None):
     app = Flask(__name__)
     setup_db(app)
-    app.secret_key = "NOTAVERYSECURESECRETEKEY"
     CORS(app)
-    oauth = OAuth(app)
-
-    auth0 = oauth.register(
-        'auth0',
-        client_id=Client_id,
-        client_secret=client_secret,
-        api_base_url='https://banned-book-project.eu.auth0.com',
-        access_token_url='https://banned-book-project.eu.auth0.com/oauth/token',
-        authorize_url='https://banned-book-project.eu.auth0.com/authorize',
-        client_kwargs={
-            'scope': 'openid profile email',
-        },
-    )
 
     @app.after_request
     def after_request(response):
@@ -65,89 +32,79 @@ def create_app(test_config=None):
 
         return response
 
-    @app.route('/callback')
-    def callback_handling():
-        # Handles response from token endpoint
-        token = auth0.authorize_access_token()
-        print(token)
-        resp = auth0.get('userinfo')
-        userinfo = resp.json()
-
-        # Store the user information in flask session.
-        session['jwt_payload'] = userinfo
-        print(userinfo)
-        session[constants.JWT] = token['access_token']
-        session[constants.JWT_PAYLOAD] = userinfo
-        session['profile'] = {
-            'user_id': userinfo['sub'],
-            'name': userinfo['name'],
-            'picture': userinfo['picture']
-        }
-        return redirect('/dashboard')
-
-    @app.route('/login')
-    def login():
-        return auth0.authorize_redirect(redirect_uri=returning)
-
-    @app.route('/dashboard')
-    @user_in_session
-    def dashboard():
-        return render_template('pages/dashboard.html', userinfo=session['profile'],
-                               userinfo_pretty=json.dumps(session['jwt_payload'], indent=4))
-
-    @app.route('/logout')
-    def logout():
-        # Clear session stored data
-        session.clear()
-        # Redirect user to logout endpoint
-        #params = {'returnTo': url_for('home', _external=True), 'client_id': Client_id}
-        print('logged out')
-        return redirect(auth0.api_base_url + '/v2/logout?' #+ #urlencode(params)
-               #
-                        )
-
     @app.route('/')
+    def landing_page():
+
+        return "welcome to the banned books API Landing page "
+
+    @app.route('/books')
     def get_books():
-
+        # retunrs all the books the countries they are banned
         books = Book.query.all()
-        # query = db.session.query(Writer, Book).outerjoin(Writer, Book.id == Writer.book).all()
-        # for book in books:
-        AUTH0_AUTHORIZE_URL = create_auth0()
+        # AUTH0_AUTHORIZE_URL = create_auth0()
+        books_dictionary = {}
+        for books in books:
+            books_dictionary[books.id] = books.title
 
-        return render_template('pages/home.html', books=books, isHomePage=True, AUTH0_AUTHORIZE_URL=AUTH0_AUTHORIZE_URL)
+        return jsonify({
+            'success': True,
+            'books': books_dictionary
+        })
 
     @app.route('/authors')
     def get_authors():
+        # returns all the writers and there books on this list
         authors = Writer.query.all()
+        authors_dictionary = {}
+        for author in authors:
+            authors_dictionary[author.id] = author.name
 
-        return render_template('pages/author.html', authors=authors)
+        return jsonify({
+            'success': True,
+            'authors': authors_dictionary
+        })
 
     @app.route('/countries')
     def get_countries():
+        # retunrs all the countries and the books banned their
         countries = Countries.query.all()
+        countries_dictionary = {}
+        for country in countries:
+            countries_dictionary[country.id] = country.name
 
-        return render_template('pages/countries.html', countries=countries)
+        return jsonify({
+            'success': True,
+            'countries': countries_dictionary
+        })
 
     @app.route('/authors/<int:author_id>')
     def get_individual_authors(author_id):
+        # gets the individual author and all books associanted with them
         author = Writer.query.filter_by(id=author_id).first()
         author_name = author.name
         books = Book.query.filter_by(author_id=author_id).all()
 
-        return render_template('pages/author_profile.html', author_name=author_name, books=books)
+        return jsonify({
+            'success': True,
+            'questions': author
+        })
 
     @app.route('/book/<int:book_id>')
     def get_individual_book(book_id):
+        # returrns book and author and countries it is banned in
         book = Book.query.filter_by(id=book_id).first()
-        book = book.title
+        book = book.id
         print(book)
 
-        return render_template('pages/individual_book.html', book=book)
+        return jsonify({
+            'success': True,
+            'questions': book
+        })
 
     @app.route('/book/delete/<int:book_id>', methods=['DELETE'])
-    @user_in_session
-    #@requires_auth('del:book')
+    @requires_auth('del:book')
     def delete_book(*args, **kwargs):
+        # deletes a book
         id = kwargs['book_id']
         try:
             print('TRYING')
@@ -167,15 +124,10 @@ def create_app(test_config=None):
             print(422)
             abort(422)
 
-    @app.route('/addbook')
-    def add_book_():
-
-        return render_template('forms/add_book.html')
-
-    @app.route('/addbook/submit', methods=['POST'])
-    @user_in_session
-    #@requires_auth('post:book')
+    @app.route('/addbook/', methods=['POST'])
+    @requires_auth('post:book')
     def add_book_submit(*args, **kwargs):
+        # adds a book
         body = request.get_json()
         new_book = body.get('title')
         print(new_book)
@@ -194,17 +146,10 @@ def create_app(test_config=None):
                 'created': book.title
             })
 
-    @app.route('/authors/edit/<int:writer_id>')
-    def edit_writer(writer_id):
-        authors = Writer.query.all()
-        author = Writer.query.filter_by(id=writer_id).first()
-
-        return render_template('forms/edit_authors.html', author=author)
-
-    @app.route('/authors/edit/submit/<int:writer_id>', methods=['PATCH'])
-    @user_in_session
-    #@requires_auth('patch:editauthor')
+    @app.route('/authors/edit/<int:writer_id>', methods=['PATCH'])
+    @requires_auth('patch:editauthor')
     def submit_writer_edit(*args, **kwargs):
+        # edddies an author
         writer_id = kwargs['writer_id']
         update = Writer.query.filter_by(id=writer_id).first()
         print(update.name, update.about, update.dob)

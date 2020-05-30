@@ -1,7 +1,8 @@
 {% extends 'layouts/main.html' %}
 {% block title %}author{% endblock %}
 {% block content %}
-
+<div class="row">
+	<div class="col-sm-6">
 		<h1>{{ book }} 🔥</h1>
         <ul id = 'authors'>
             {% for book in books %}
@@ -10,4 +11,8 @@
 
         </ul>
 
+
+
+</div>
+</div>
 {% endblock %}

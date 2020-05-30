@@ -12,13 +12,15 @@
 
 </head>
 <body>
+
 <nav>
     <ul class="navigation_bar_main">
         <li><a href="/">Home</a></li>
         <li><a href="/authors">Authors</a></li>
         <li><a href="/countries">Countries</a></li>
         {% if isHomePage %}
-            <li style="float: right"><a href="/login">Login</a></li>
+            <li style="float: right"><a href="{{ AUTH0_AUTHORIZE_URL }}">Login</a></li>
+             <button id="loginme" onclick=loginme()>testhref</button>
             <li style="float: right"><a href="#ex1" rel="modal:open">Delete</a></li>
             <div id="ex1" class="modal">
                 {% for book in books %}
@@ -38,6 +40,7 @@
 </div>
 <div id="footer">
     {% block footer %}
+
     {% endblock %}
 </div>
 
@@ -50,5 +53,9 @@
 
 
 </body>
-
+<script>
+    function loginme(){
+        console.log('uyhguggugug')
+}
+</script>
 </html>
