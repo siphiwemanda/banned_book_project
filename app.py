@@ -35,7 +35,7 @@ def create_app(test_config=None):
     @app.route('/')
     def landing_page():
 
-        return "welcome to the banned books API Landing page "
+        return "welcome to the banned books API  Landing page "
 
     @app.route('/books')
     def get_books():
