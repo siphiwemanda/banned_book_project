@@ -1,7 +1,7 @@
 import os
 from flask import Flask, jsonify, abort, request, render_template, redirect, session
 from flask_cors import CORS
-from models import setup_db, Book, Writer, Countries, db
+from models import setup_db, Book, Writer, Countries, db, Banned_book
 import os.path
 from auth import requires_auth, AuthError
 
@@ -37,10 +37,11 @@ def create_app(test_config=None):
 
         return "welcome to the banned books API  Landing page "
 
-    @app.route('/books')
+    @app.route('/book')
     def get_books():
-        # retunrs all the books the countries they are banned
+        # returns all the books in the database
         books = Book.query.all()
+
         # AUTH0_AUTHORIZE_URL = create_auth0()
         books_dictionary = {}
         for books in books:
@@ -53,7 +54,7 @@ def create_app(test_config=None):
 
     @app.route('/authors')
     def get_authors():
-        # returns all the writers and there books on this list
+        # returns all the writers in the database
         authors = Writer.query.all()
         authors_dictionary = {}
         for author in authors:
@@ -66,7 +67,7 @@ def create_app(test_config=None):
 
     @app.route('/countries')
     def get_countries():
-        # retunrs all the countries and the books banned their
+        # returns all the countries in the database
         countries = Countries.query.all()
         countries_dictionary = {}
         for country in countries:
@@ -79,26 +80,61 @@ def create_app(test_config=None):
 
     @app.route('/authors/<int:author_id>')
     def get_individual_authors(author_id):
-        # gets the individual author and all books associanted with them
+        # gets the individual author and all books in the database associated with them
         author = Writer.query.filter_by(id=author_id).first()
-        author_name = author.name
+        writer_name = author.name
         books = Book.query.filter_by(author_id=author_id).all()
+        books_dictionary = {}
+        for book in books:
+            books_dictionary[book.id] = book.title
 
         return jsonify({
             'success': True,
-            'questions': author
+            'author': writer_name,
+            'Books': books_dictionary
         })
 
     @app.route('/book/<int:book_id>')
     def get_individual_book(book_id):
-        # returrns book and author and countries it is banned in
+        # returns book and author and the counties they are banned in
         book = Book.query.filter_by(id=book_id).first()
-        book = book.id
         print(book)
+        book_title = book.title
 
+        bookwriter = book.author_id
+        print(bookwriter)
+
+        writer = Writer.query.filter_by(id=bookwriter).first()
+        writer_name = writer.name
+        print(writer)
+        print(writer_name)
+        print(book_title)
+
+        banned_details = Banned_book.query.filter(Banned_book.book_id == book_id).all()
+        print(banned_details)
+        details_list = []
+        for details in banned_details:
+            start_date = details.start_date
+            end_date = details.end_date
+            reason_given = details.reason_given
+            sublist = [start_date, end_date, reason_given]
+
+            countries = details.country_id
+            print(countries)
+            country_name = Countries.query.filter_by(id=countries).all()
+            print(country_name)
+            # name =country_name.name
+            for name in country_name:
+                name = name.name
+                print(name)
+                sublist.insert(0, name)
+            details_list.append(sublist)
+        print(details_list)
         return jsonify({
             'success': True,
-            'questions': book
+            'Book title': book_title,
+            'author': writer_name,
+            'banned book details': details_list
         })
 
     @app.route('/book/delete/<int:book_id>', methods=['DELETE'])
