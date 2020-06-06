@@ -5,23 +5,23 @@ from models import setup_db, Book, Writer, Countries, db, Banned_book
 import os.path
 from auth import requires_auth, AuthError
 
-database_path = os.environ['DATABASE_URL']
-Domain = os.environ['Domain']
-Audience = os.environ['audience']
-Client_id = os.environ['client_id']
-returning = os.environ['redirect']
-
-
-def create_auth0():
-    AUTH0_AUTHORIZE_URL = 'https://' + Domain + '/authorize?audience=' + Audience + '&response_type=token&client_id=' + Client_id + '&redirect_uri=' + returning
-    print(AUTH0_AUTHORIZE_URL)
-    return AUTH0_AUTHORIZE_URL
-
 
 def create_app(test_config=None):
     app = Flask(__name__)
     setup_db(app)
     CORS(app)
+
+    database_path = os.getenv('DATABASE_URL')
+    Domain = os.getenv('Domain')
+    #print(Domain)
+    Audience = os.getenv('audience')
+    Client_id = os.getenv('client_id')
+    returning = os.getenv('redirect')
+
+    def create_auth0():
+        AUTH0_AUTHORIZE_URL = 'https://' + Domain + '/authorize?audience=' + Audience + '&response_type=token&client_id=' + Client_id + '&redirect_uri=' + returning
+        print(AUTH0_AUTHORIZE_URL)
+        return AUTH0_AUTHORIZE_URL
 
     @app.after_request
     def after_request(response):
@@ -80,65 +80,71 @@ def create_app(test_config=None):
 
     @app.route('/authors/<int:author_id>')
     def get_individual_authors(author_id):
-        # gets the individual author and all books in the database associated with them
-        author = Writer.query.filter_by(id=author_id).first()
-        writer_name = author.name
-        books = Book.query.filter_by(author_id=author_id).all()
-        books_dictionary = {}
-        for book in books:
-            books_dictionary[book.id] = book.title
+        try:
+            # gets the individual author and all books in the database associated with them
+            author = Writer.query.filter_by(id=author_id).first()
+            writer_name = author.name
+            books = Book.query.filter_by(author_id=author_id).all()
+            books_dictionary = {}
+            for book in books:
+                books_dictionary[book.id] = book.title
 
-        return jsonify({
-            'success': True,
-            'author': writer_name,
-            'Books': books_dictionary
-        })
+            return jsonify({
+                'success': True,
+                'author': writer_name,
+                'Books': books_dictionary
+            })
+        except:
+            abort(422)
 
     @app.route('/book/<int:book_id>')
     def get_individual_book(book_id):
-        # returns book and author and the counties they are banned in
-        book = Book.query.filter_by(id=book_id).first()
-        print(book)
-        book_title = book.title
+        try:
+            # returns book and author and the counties they are banned in
+            book = Book.query.filter_by(id=book_id).first()
+            print(book)
+            book_title = book.title
 
-        bookwriter = book.author_id
-        print(bookwriter)
+            bookwriter = book.author_id
+            print(bookwriter)
 
-        writer = Writer.query.filter_by(id=bookwriter).first()
-        writer_name = writer.name
-        print(writer)
-        print(writer_name)
-        print(book_title)
+            writer = Writer.query.filter_by(id=bookwriter).first()
+            writer_name = writer.name
+            print(writer)
+            print(writer_name)
+            print(book_title)
 
-        banned_details = Banned_book.query.filter(Banned_book.book_id == book_id).all()
-        print(banned_details)
-        details_list = []
-        for details in banned_details:
-            start_date = details.start_date
-            end_date = details.end_date
-            reason_given = details.reason_given
-            sublist = [start_date, end_date, reason_given]
+            banned_details = Banned_book.query.filter(Banned_book.book_id == book_id).all()
+            print(banned_details)
+            details_list = []
+            for details in banned_details:
+                start_date = details.start_date
+                end_date = details.end_date
+                reason_given = details.reason_given
+                sublist = [start_date, end_date, reason_given]
 
-            countries = details.country_id
-            print(countries)
-            country_name = Countries.query.filter_by(id=countries).all()
-            print(country_name)
-            # name =country_name.name
-            for name in country_name:
-                name = name.name
-                print(name)
-                sublist.insert(0, name)
-            details_list.append(sublist)
-        print(details_list)
-        return jsonify({
-            'success': True,
-            'Book title': book_title,
-            'author': writer_name,
-            'banned book details': details_list
-        })
+                countries = details.country_id
+                print(countries)
+                country_name = Countries.query.filter_by(id=countries).all()
+                print(country_name)
+                # name =country_name.name
+                for name in country_name:
+                    name = name.name
+                    print(name)
+                    sublist.insert(0, name)
+                details_list.append(sublist)
+            print(details_list)
+            return jsonify({
+                'success': True,
+                'Book title': book_title,
+                'author': writer_name,
+                'banned details': details_list
+            })
+        except:
+            abort(422)
 
     @app.route('/book/delete/<int:book_id>', methods=['DELETE'])
-    @requires_auth('del:book')
+   # @requires_auth('del:book')
     def delete_book(*args, **kwargs):
         # deletes a book
         id = kwargs['book_id']
@@ -160,8 +166,8 @@ def create_app(test_config=None):
             print(422)
             abort(422)
 
-    @app.route('/addbook/', methods=['POST'])
-    @requires_auth('post:book')
+    @app.route('/addbook', methods=['POST'])
+    #@requires_auth('post:book')
     def add_book_submit(*args, **kwargs):
         # adds a book
         body = request.get_json()
@@ -183,7 +189,7 @@ def create_app(test_config=None):
             })
 
     @app.route('/authors/edit/<int:writer_id>', methods=['PATCH'])
-    @requires_auth('patch:editauthor')
+    #@requires_auth('patch:editauthor')
     def submit_writer_edit(*args, **kwargs):
         # edddies an author
         writer_id = kwargs['writer_id']
