@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 class BanedBooksTests(unittest.TestCase):
     load_dotenv(verbose=True)
     DATAMANGER_ROLE = os.getenv('DATAMANGER_ROLE')
-    #EDITOR_ROLE = os.getenv('EDITOR_ROLE')
+    EDITOR_ROLE = os.getenv('EDITOR_ROLE')
 
 
     Domain = os.getenv('Domain')
@@ -195,7 +195,6 @@ class BanedBooksTests(unittest.TestCase):
         response = self.client().post('/addbook', json=self.addbook, headers=headers)
         data = json.loads(response.data)
         self.assertEqual(response.status_code, 401)
-        self.assertEqual(data['success'], False)
 
     def test_role_datamanger_pass(self):
         headers = self.create_auth_headers(token=self.DATAMANGER_ROLE)

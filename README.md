@@ -107,7 +107,7 @@ Errors are returned as JSON in the following format:
 }
 ```
 
-######delete book 
+#####delete book 
 
 `DELETE/book/delete/2`
 
@@ -119,7 +119,7 @@ Errors are returned as JSON in the following format:
 ```
 
 
-######add a book
+#####add a book
 
 `POST/addbook`
 
@@ -129,7 +129,7 @@ Errors are returned as JSON in the following format:
   "success": true
 }
 ```
-######edit author
+#####edit author
 
 `PATCH/authors/edit/1`
 
