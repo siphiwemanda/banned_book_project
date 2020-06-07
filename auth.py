@@ -1,3 +1,4 @@
+
 import json
 from flask import request, _request_ctx_stack, abort
 from functools import wraps
@@ -13,7 +14,7 @@ API_AUDIENCE = 'logins'
 AuthError Exception
 A standardized way to communicate auth failure modes
 '''
-
+##Builds wrapper for authentication and permissions
 
 class AuthError(Exception):
     def __init__(self, error, status_code):

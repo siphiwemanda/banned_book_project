@@ -152,7 +152,6 @@ class BanedBooksTests(unittest.TestCase):
         response = self.client().delete('/book/delete/20000')
         data = json.loads(response.data)
         self.assertEqual(response.status_code, 400)
-        # self.assertEqual(data['success'], False)
 
     def test_add_book_submit(self):
         headers = self.create_auth_headers(token=self.DATAMANGER_ROLE)

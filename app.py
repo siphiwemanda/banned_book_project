@@ -1,3 +1,4 @@
+##Imports
 import os
 from flask import Flask, jsonify, abort, request, render_template, redirect, session
 from flask_cors import CORS
@@ -25,6 +26,7 @@ def create_app(test_config=None):
     print(returning)
     DATAMANGER_ROLE = os.getenv('DATAMANGER_ROLE')
 
+    ##Create login link
     def create_auth0():
         AUTH0_AUTHORIZE_URL = 'https://' + Domain + '/authorize?audience=' + Audience + '&response_type=token&client_id=' + Client_id + '&redirect_uri=' + returning
         print(AUTH0_AUTHORIZE_URL)
@@ -44,6 +46,7 @@ def create_app(test_config=None):
     def landing_page():
         AUTH0_AUTHORIZE_URL = create_auth0()
         return render_template('layouts/main.html', AUTH0_AUTHORIZE_URL=AUTH0_AUTHORIZE_URL)
+
 
     @app.route('/book')
     def get_books():
@@ -186,7 +189,7 @@ def create_app(test_config=None):
         new_book_cover = body.get('book_cover')
         print(new_book_cover)
 
-        if new_book=='' and new_synopsis=='': # and new_synopsis is None:
+        if new_book=='' and new_synopsis=='':
             abort(422)
         try:
 
@@ -235,6 +238,8 @@ def create_app(test_config=None):
             "Author": update.name
         })
 
+
+    ##Error handlers
     @app.errorhandler(404)
     def not_found(error):
         return jsonify({

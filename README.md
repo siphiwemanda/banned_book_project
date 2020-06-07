@@ -1,8 +1,8 @@
 # FSND Capstone Project
 
-This application is an API that lets the user look for books authour and coutried in order to determin what books have been banneded in what countries and why.
-This application was built as part of th Udacity Full Stack Web developer nanodegrtee
-and was orginally built to show my proficiance in:
+This application is an API that lets the user determine what books have been banned in what countries and why.
+This application was built as part of the Udacity Full Stack Web developer nanodegree
+and was originally built to show my ability in:
 
 ####Data modeling
 
@@ -22,13 +22,21 @@ and was orginally built to show my proficiance in:
 
 ####Deployment
 
-- API is hosted live via Heroku
+- API is hosted live via Heroku - https://bannedbooks.herokuapp.com/
 
 ##local installation
 
 Clone this repository 
-Install the requirement in the requirement document
+Install the requirements in the requirements.txt script
+Set the environment variables in the setup.sh file
 RUN the app: `FLASK_APP=app.py FLASK_DEBUG=true flask run`
+
+##Roles
+Datamanger - access to delete, post and patch
+
+Editor - acesss to patch
+
+postman collection can be used to get JWT if current variables set in the setup.sh file  have expired
 
 
 
@@ -50,7 +58,7 @@ Errors are returned as JSON in the following format:
 
 - 404: Response not found
 
-- 422: unprocessable
+- 422: Unprocessable
 
 - 405: Method not allowed
 
