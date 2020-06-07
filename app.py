@@ -4,23 +4,31 @@ from flask_cors import CORS
 from models import setup_db, Book, Writer, Countries, db, Banned_book
 import os.path
 from auth import requires_auth, AuthError
-
+from dotenv import load_dotenv
 
 def create_app(test_config=None):
     app = Flask(__name__)
     setup_db(app)
     CORS(app)
 
-    database_path = os.getenv('DATABASE_URL')
+    load_dotenv(verbose=True)
     Domain = os.getenv('Domain')
-    #print(Domain)
+    print('Domain is ' + Domain)
+
+
+    database_path = os.getenv('DATABASE_URL')
+    #Domain = os.getenv('Domain')
+    #print('Domain is ' + Domain)
     Audience = os.getenv('audience')
     Client_id = os.getenv('client_id')
     returning = os.getenv('redirect')
+    print(returning)
+    DATAMANGER_ROLE = os.getenv('DATAMANGER_ROLE')
 
     def create_auth0():
         AUTH0_AUTHORIZE_URL = 'https://' + Domain + '/authorize?audience=' + Audience + '&response_type=token&client_id=' + Client_id + '&redirect_uri=' + returning
         print(AUTH0_AUTHORIZE_URL)
+        print(returning)
         return AUTH0_AUTHORIZE_URL
 
     @app.after_request
@@ -34,8 +42,8 @@ def create_app(test_config=None):
 
     @app.route('/')
     def landing_page():
-
-        return "welcome to the banned books API  Landing page "
+        AUTH0_AUTHORIZE_URL = create_auth0()
+        return render_template('layouts/main.html', AUTH0_AUTHORIZE_URL=AUTH0_AUTHORIZE_URL)
 
     @app.route('/book')
     def get_books():
@@ -144,7 +152,7 @@ def create_app(test_config=None):
             abort(422)
 
     @app.route('/book/delete/<int:book_id>', methods=['DELETE'])
-   # @requires_auth('del:book')
+    @requires_auth('del:book')
     def delete_book(*args, **kwargs):
         # deletes a book
         id = kwargs['book_id']
@@ -167,16 +175,19 @@ def create_app(test_config=None):
             abort(422)
 
     @app.route('/addbook', methods=['POST'])
-    #@requires_auth('post:book')
+    @requires_auth('post:book')
     def add_book_submit(*args, **kwargs):
         # adds a book
         body = request.get_json()
         new_book = body.get('title')
-        print(new_book)
+        print('book is ' + new_book)
         new_synopsis = body.get('synopsis')
         print(new_synopsis)
         new_book_cover = body.get('book_cover')
         print(new_book_cover)
+
+        if new_book=='' and new_synopsis=='': # and new_synopsis is None:
+            abort(422)
         try:
 
             book = Book(title=new_book, synopsis=new_synopsis, book_cover=new_book_cover)
@@ -189,24 +200,30 @@ def create_app(test_config=None):
             })
 
     @app.route('/authors/edit/<int:writer_id>', methods=['PATCH'])
-    #@requires_auth('patch:editauthor')
+    @requires_auth('patch:editauthor')
     def submit_writer_edit(*args, **kwargs):
-        # edddies an author
+        # edits an author
         writer_id = kwargs['writer_id']
         update = Writer.query.filter_by(id=writer_id).first()
         print(update.name, update.about, update.dob)
         body = request.get_json()
-        print(body)
+        #print('body is ' + body)
+
+        if body.get('name') == '' or body.get('dob') == '' or body.get('about') == '':
+            print('failing')
+            abort(422)
 
         if body.get('name'):
             update.name = body.get('name')
-            print(update.name)
+            print('name ' + update.name)
         if body.get('dob'):
             update.dob = body.get('dob')
-            print(update.dob)
+            print('dob ' + update.dob)
         if body.get('about'):
             update.about = body.get('about')
             print(update.about)
+
+
 
         try:
             update.insert()
