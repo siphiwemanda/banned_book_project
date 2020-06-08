@@ -122,7 +122,7 @@ def create_app(test_config=None):
             'countries': countries_dictionary
         })
 
-    @app.route('/authors/<int:author_id>', methods=['GET', 'PATCH'])  # TODO add edit author here
+    @app.route('/authors/<int:author_id>', methods=['GET', 'PATCH'])
     def individual_authors(*args, **kwargs):
         author_id = kwargs['author_id']
         if request.method == 'GET':
@@ -185,7 +185,7 @@ def create_app(test_config=None):
 
             return edit_individual_authors()
 
-    @app.route('/book/<int:book_id>', methods=['GET', 'DELETE'])  # TODO add permission for delete
+    @app.route('/book/<int:book_id>', methods=['GET', 'DELETE'])
     def individual_book(*args, **kwargs):
         id = kwargs['book_id']
         if request.method == 'GET':
