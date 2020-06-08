@@ -1,6 +1,10 @@
 # FSND Capstone Project
 
 This application is an API that lets the user determine what books have been banned in what countries and why.
+
+Over the course of history various regiemes have banned books for primarily (but not limited to) political reasons. Particularly in todays climate it is vital to understand how information and ideas have historically been exchanged and surpressed.
+
+
 This application was built as part of the Udacity Full Stack Web developer nanodegree
 and was originally built to show my ability in:
 
@@ -24,12 +28,27 @@ and was originally built to show my ability in:
 
 - API is hosted live via Heroku - https://bannedbooks.herokuapp.com/
 
-##local installation
+##Local installation
 
-Clone this repository 
-Install the requirements in the requirements.txt script
-Set the environment variables in the setup.sh file
-RUN the app: `FLASK_APP=app.py FLASK_DEBUG=true flask run`
+Clone this repository and move to the head directory
+```
+git clone https://github.com/siphiwemanda/banned_book_project.git
+cd banned_book_project/
+```
+
+Install the requirements in the `requirements.txt` script
+```
+pip3 install -r requirements.txt
+```
+
+Set the environment variables in the `setup.sh` file
+```
+source setup.sh
+```
+Start the development server using the command
+```
+FLASK_APP=app.py FLASK_DEBUG=true flask run
+```
 
 ##Roles
 Datamanger - access to delete, post and patch

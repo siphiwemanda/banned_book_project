@@ -1,13 +1,14 @@
-
 import json
+import os
+
 from flask import request, _request_ctx_stack, abort
 from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
 
-AUTH0_DOMAIN = 'banned-book-project.eu.auth0.com'
-ALGORITHMS = ['RS256']
-API_AUDIENCE = 'logins'
+AUTH0_DOMAIN = os.getenv('Domain')
+ALGORITHMS = os.getenv('ALGORITHMS')
+API_AUDIENCE = os.getenv('audience')
 
 ## AuthError Exception
 '''
@@ -136,7 +137,9 @@ def requires_auth(permission=''):
         @wraps(f)
         def wrapper(*args, **kwargs):
             token = get_token_auth_header()
+            print(token)
             payload = verify_decode_jwt(token)
+            print(payload)
             check_permissions(permission, payload)
             return f(payload, *args, **kwargs)
 
