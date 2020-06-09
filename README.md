@@ -8,27 +8,27 @@ Over the course of history various regiemes have banned books for primarily (but
 This application was built as part of the Udacity Full Stack Web developer nanodegree
 and was originally built to show my ability in:
 
-####Data modeling
+**Data modeling**
 
 - Architect relational database models in Python
 - Utilize SQLAlchemy to conduct database queries
 
-####API Architecture and Testing
+**API Architecture and Testing**
 
 - Follow RESTful principles of API development using Flask
 - Structure endpoints to perform CRUD operations, as well as error handling
 - Demonstrate validity of API behavior using the unittest library
 
-####Third Party Authentication
+**Third Party Authentication**
 
 - Configure Role Based Authentication and roles-based access control (RBAC) in a Flask application utilizing Auth0
 - Decode and verify JWTs from Authorization headers
 
-####Deployment
+#Deployment
 
 - API is hosted live via Heroku - https://bannedbooks.herokuapp.com/
 
-##Local installation
+#Local installation
 
 Clone this repository and move to the head directory
 ```
@@ -50,7 +50,7 @@ Start the development server using the command
 FLASK_APP=app.py FLASK_DEBUG=true flask run
 ```
 
-##Roles
+#Roles
 Datamanger - access to delete, post and patch
 
 Editor - acesss to patch
@@ -59,7 +59,7 @@ postman collection can be used to get JWT if current variables set in the setup.
 
 
 
-##API Reference
+#API Reference
 
 Errors are returned as JSON in the following format:
 
@@ -71,7 +71,7 @@ Errors are returned as JSON in the following format:
 }
 ```
 
-#####The Api will return the following errors
+**The Api will return the following errors**
 
 - 400: Bad Request
 
@@ -81,7 +81,7 @@ Errors are returned as JSON in the following format:
 
 - 405: Method not allowed
 
-#####These API calls are available to the public 
+**These API calls are available to the public** 
 
 `GET/book`
 
@@ -134,7 +134,7 @@ Errors are returned as JSON in the following format:
 }
 ```
 
-#####delete book 
+**delete book** 
 
 `DELETE/book/delete/2`
 
@@ -146,7 +146,7 @@ Errors are returned as JSON in the following format:
 ```
 
 
-#####add a book
+**add a book**
 
 `POST/addbook`
 
@@ -156,7 +156,7 @@ Errors are returned as JSON in the following format:
   "success": true
 }
 ```
-#####edit author
+**edit author**
 
 `PATCH/authors/edit/1`
 
