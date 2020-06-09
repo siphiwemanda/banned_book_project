@@ -24,11 +24,11 @@ and was originally built to show my ability in:
 - Configure Role Based Authentication and roles-based access control (RBAC) in a Flask application utilizing Auth0
 - Decode and verify JWTs from Authorization headers
 
-#Deployment
+## Deployment
 
 - API is hosted live via Heroku - https://bannedbooks.herokuapp.com/
 
-#Local installation
+## Local installation
 
 Clone this repository and move to the head directory
 ```
@@ -50,7 +50,7 @@ Start the development server using the command
 FLASK_APP=app.py FLASK_DEBUG=true flask run
 ```
 
-#Roles
+## Roles
 Datamanger - access to delete, post and patch
 
 Editor - acesss to patch
