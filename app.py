@@ -71,6 +71,7 @@ def create_app(test_config=None):
 
             @requires_auth('post:book')
             def add_book(*args, **kwargs):
+
                 print('in add_book')
                 body = request.get_json(force=True)
                 # print(body)
