@@ -2,11 +2,12 @@ import os
 import os.path
 
 from dotenv import load_dotenv
-from flask import Flask, jsonify, abort, request, render_template
+from flask import Flask, jsonify, abort, request, render_template, session
 from flask_cors import CORS
 
+
 from auth import requires_auth, AuthError
-from models import setup_db, Book, Writer, Countries, Banned_book
+from models import setup_db, Book, Writer, Countries, Banned_book, db
 
 
 def create_app(test_config=None):
@@ -55,13 +56,36 @@ def create_app(test_config=None):
 
             def view_books():
                 books = Book.query.all()
+                all_books = db.session.query(Book, Writer,).filter(Book.author_id == Writer.id,).all()
+                ##print(all_books[0].Book.title)
+                ##print(all_books[0].Writer.name)
                 books_dictionary = {}
                 for books in books:
                     books_dictionary[books.id] = books.title
 
+                All_Books = []
+                for details in all_books:
+                  id = details.Book.id
+                  title = details.Book.title
+                  writer = details.Writer.name
+                  synopsis = details.Book.synopsis
+                  book_cover = details.Book.book_cover
+                  ##print(title, writer)
+                  ##newlist = [writer, title, synopsis,book_cover]
+                  ##details_list.append(newlist)
+                  book_object = {
+                    "id": id,
+                    "Title": title,
+                    "Author": writer,
+                    "Synopsis": synopsis,
+                    "Book cover": book_cover
+                  }
+                  All_Books.append(book_object)
+
+                print(All_Books)
                 return jsonify({
                     'success': True,
-                    'books': books_dictionary
+                    'books': All_Books
                 })
 
             return view_books()
