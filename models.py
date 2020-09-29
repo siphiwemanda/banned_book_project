@@ -35,6 +35,7 @@ class Book(db.Model):
     banned = db.relationship('Banned_book', lazy=True)
     author_id = db.Column(db.Integer, db.ForeignKey('writer.id'))
     book_cover = db.Column(db.String)
+    published_date = db.Column(db.Integer)
 
     def __init__(self, title, synopsis, book_cover):
         self.title = title
@@ -131,8 +132,8 @@ class Banned_book(db.Model):
     __tablename__ = "banned_book"
 
     id = db.Column(db.Integer, primary_key=True)
-    start_date = db.Column(db.Date)
-    end_date = db.Column(db.Date)
+    start_date_year = db.Column(db.Integer)
+    end_date_year = db.Column(db.Integer)
     book_id = db.Column(db.Integer, db.ForeignKey('book.id'))
     country_id = db.Column(db.Integer, db.ForeignKey('countries.id'))
     reason_given = db.Column(db.String)
