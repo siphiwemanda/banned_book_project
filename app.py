@@ -62,7 +62,8 @@ def create_app(test_config=None):
                     "Title": details.Book.title,
                     "Author": details.Writer.name,
                     "Synopsis": details.Book.synopsis,
-                    "Book cover": details.Book.book_cover
+                    "Book cover": details.Book.book_cover,
+                    "Published": details.Book.published_date
                   }
                   all_books.append(book_object)
 
