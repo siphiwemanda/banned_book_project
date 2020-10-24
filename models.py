@@ -95,7 +95,7 @@ class Writer(db.Model):
     def format(self):
         return {
             'id': self.id,
-            'name': self.author_name,
+            'name': self.name,
             'dob': self.dob,
             'about': self.about
         }
@@ -138,9 +138,9 @@ class Banned_book(db.Model):
     country_id = db.Column(db.Integer, db.ForeignKey('countries.id'))
     reason_given = db.Column(db.String)
 
-    def __init__(self, start_date, end_date, reason_given):
-        self.start_date = start_date
-        self.end_date = end_date
+    def __init__(self, start_date_year, end_date_year, reason_given):
+        self.start_date_year = start_date_year
+        self.end_date_year = end_date_year
         self.reason_given = reason_given
 
     def insert(self):
@@ -157,7 +157,7 @@ class Banned_book(db.Model):
     def format(self):
         return {
             'id': self.id,
-            'start_date': self.start_date,
-            'end_date': self.end_date,
+            'start_date_year': self.start_date_year,
+            'end_date_year': self.end_date_year,
             'reason_given': self.reason_given
         }
