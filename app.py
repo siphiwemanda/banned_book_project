@@ -219,8 +219,8 @@ def create_app(test_config=None):
                     print(banned_details)
                     details_list = []
                     for details in banned_details:
-                        start_date = details.start_date
-                        end_date = details.end_date
+                        start_date = details.start_date_year
+                        end_date = details.end_date_year
                         reason_given = details.reason_given
                         sublist = [start_date, end_date, reason_given]
 
