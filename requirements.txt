@@ -1,5 +1,5 @@
 alembic==1.4.2
-Authlib==0.14.3
+Authlib==1.6.5
 certifi==2022.12.7
 cffi==1.14.0
 chardet==3.0.4
